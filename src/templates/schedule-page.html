@@ -1,0 +1,20 @@
+<schedule model="schedule"></schedule>
+
+<form name="addShift"
+      ng-submit="addShift.$valid && (editing = schedule.addShift(add.emp))">
+  <select required name="employee" ng-model="add.emp"
+          ng-options="employee.name for employee in employees.listEmployees()
+                      track by employee.id">
+  </select>
+  <input type="submit" value="Create">
+</form>
+
+<form ng-show="editing" name="editShift">
+  <input type="number" name="startTime"
+         ng-model="editing_startTime.getterSetter"
+         ng-model-options="{ getterSetter: true }">
+  <input type="number" name="length"
+         ng-model="editing_length.getterSetter"
+         ng-model-options="{ getterSetter: true }">
+  <input type="button" value="Done" ng-click="editing = null">
+</form>

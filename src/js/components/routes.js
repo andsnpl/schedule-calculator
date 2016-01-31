@@ -1,0 +1,52 @@
+import app from '../schedule-calculator';
+import './get-set-wrapper.service';
+
+import schedulePageTemplate from '../../templates/schedule-page.html';
+// custom directives used in schedule page
+import './schedule.directive';
+
+app.config([
+  '$routeProvider',
+  function ($routeProvider, $sce) {
+    $routeProvider
+      .when('/', {
+        templateUrl: schedulePageTemplate,
+        controller: 'SchedulePageCtrl as ctrl'
+      })
+      .otherwise('/');
+  }
+]);
+
+app.controller('EmployeePageCtrl', [
+  '$scope', 'employeeList',
+  function ($scope, employeeList) {
+    $scope.employees = employeeList;
+  }
+]);
+
+app.controller('SchedulePageCtrl', [
+  '$scope', 'schedule', 'employeeList', 'GetSetWrapper',
+  function ($scope, schedule, employeeList, GetSetWrapper) {
+    $scope.schedule = schedule;
+    $scope.employees = employeeList;
+
+    $scope.editing = null;
+    $scope.editing_startTime = new GetSetWrapper(
+      function () { return $scope.editing; },
+      'startTime', 'setStartTime'
+    );
+    $scope.editing_length = new GetSetWrapper(
+      function () { return $scope.editing; },
+      'length', 'setLength'
+    );
+
+    let emp = employeeList.addEmployee('test', 'test', 10);
+  }
+]);
+
+app.controller('ReportPageCtrl', [
+  '$scope', 'schedule',
+  function ($scope, schedule) {
+    $scope.schedule = schedule;
+  }
+]);

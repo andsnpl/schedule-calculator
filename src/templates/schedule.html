@@ -1,0 +1,33 @@
+<div class="schedule">
+  <ul class="shifts">
+    <li class="shift" ng-repeat="shift in shifts"
+        ng-style="{
+          'left': (shift.startTime - schedule.openTime)
+                    * pctOfDayPerHour + '%',
+          'width': shift.length * pctOfDayPerHour + '%'
+        }">
+    </li>
+  </ul>
+  <ol class="gridmarks" ng-class="hoursCountAsClassObject()">
+    <li class="gridmarks-col" ng-repeat="hour in hours"
+        ng-style="{ 'width': pctOfDayPerHour + '%' }">
+      <span class="gridmarks-header">
+        <span class="gridmarks-label shortlabel">
+          {{ hour | date: 'H' }}
+        </span>
+        <span class="gridmarks-label medlabel">
+          {{ hour | date: 'h a' }}
+        </span>
+        <span class="gridmarks-label longlabel">
+          {{ hour | date: 'h:mm a' }}
+        </span>
+      </span>
+    </li>
+  </ol>
+
+  <!-- content that is as wide as the gridmarks but not absolutely positioned,
+       to force the container to keep the right minimum width -->
+  <div class="widthhack" ng-repeat="hour in hours"
+       ng-style="{ width: pctOfDayPerHour + '%' }">
+ </div>
+</div>

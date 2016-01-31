@@ -1,0 +1,123 @@
+$hourminwidth: 1.25rem;
+$meddatewidth: 5rem;
+$longdatewidth: 6.75rem;
+
+body {
+  font-family: sans-serif;
+}
+
+.schedule {
+  position: relative;
+  display: inline-block; /* don't shrink smaller than content */
+  min-width: 100%; /* grow with screen */
+  box-sizing: border-box;
+  padding: 1rem;
+  white-space: nowrap;
+}
+
+.shifts {
+  list-style: none;
+  padding: 1.85rem 0 0 0;
+  margin: 0 0 -1.5rem 0; /* negative bottom compensates for widthhack adding
+    extra space below */
+  min-height: 3rem;
+}
+
+.shift {
+  position: relative;
+  display: block;
+  height: 1.35rem;
+  margin: 0.75rem 0;
+  background-color: #bb0000;
+}
+
+.gridmarks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position:absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: -1;
+  display: flex;
+}
+
+.gridmarks-col {
+  display: inline-block;
+  box-sizing: border-box;
+  border-left: 1px solid #b2b2b2;
+  padding: 0 1% 0 0.25%;
+  min-width: $hourminwidth;
+}
+
+.gridmarks-header {
+  display: block;
+  position: relative;
+  height: 2rem;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.gridmarks-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #505050;
+
+  /* initial time display */
+
+  &.shortlabel {
+    display: block;
+  }
+
+  &.medlabel,
+  &.longlabel {
+    display: none;
+  }
+
+  /* alternate display for time based on both width and number of columns */
+
+  @mixin med {
+    width: $meddatewidth;
+
+    &.medlabel {
+      display: block;
+    }
+
+    &.shortlabel,
+    &.longlabel {
+      display: none;
+    }
+  }
+
+  @mixin long {
+    width: $longdatewidth;
+
+    &.longlabel {
+      display: block;
+    }
+
+    &.shortlabel,
+    &.medlabel {
+      display: none;
+    }
+  }
+
+  @for $numhours from 1 through 24 {
+    .hourscount-#{$numhours} & {
+      @media only screen and (min-width: $numhours * $meddatewidth) {
+        @include med;
+      }
+
+      @media only screen and (min-width: $numhours * $longdatewidth) {
+        @include long;
+      }
+    }
+  }
+}
+
+.widthhack {
+  min-width: $hourminwidth;
+  display: inline-block;
+}
