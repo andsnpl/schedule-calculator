@@ -1,17 +1,25 @@
 <ul class="employee-list">
-  <li class="employee" ng-repeat="employee in employees.listEmployees()">
+  <li class="employee"
+      ng-repeat="employee in employees.listEmployees() | orderBy:'':true"
+      ng-click="editing.currentEmployee = employee"
+      ng-class="{
+        'active-employee': employee === editing.currentEmployee
+      }">
     {{ employee.name }}
+    <button delete-button="employee"></button>
   </li>
 </ul>
 
 <form class="addemployee" name="addEmployee"
-      ng-submit="addEmployee.$valid
-        && employees.addEmployee(add.name, add.role, add.rate)">
+      ng-submit="addEmployee.$valid && submit()">
   <input required class="addemployee-input" type="text"
-         name="name" ng-model="add.name">
+         name="name" ng-model="editing_name.getterSetter"
+         ng-model-options="{ getterSetter: true }">
   <input class="addemployee-input" type="text"
-         name="role" ng-model="add.role">
+         name="role" ng-model="editing_role.getterSetter"
+         ng-model-options="{ getterSetter: true }">
   <input class="addemployee-input" type="text"
-         name="payRate" ng-model="add.rate">
+         name="payRate" ng-model="editing_payRate.getterSetter"
+         ng-model-options="{ getterSetter: true }">
   <input type="submit" value="Save">
 </form>

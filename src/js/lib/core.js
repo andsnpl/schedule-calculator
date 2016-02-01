@@ -117,6 +117,26 @@ export class Employee {
       throw new Error('Invalid parameters for Employee.');
     }
   }
+  _setPossiblyInvalidProp(propName, value) {
+    let mock = Object.create(this);
+    mock[propName] = value;
+    if (!validateEmployee(mock)) {
+      throw new Error(`Invalid ${propName}`);
+    }
+    this[propName] = value;
+  }
+  setName(name) {
+    this._setPossiblyInvalidProp('name', name);
+    return this;
+  }
+  setRole(role) {
+    this._setPossiblyInvalidProp('role', role);
+    return this;
+  }
+  setPayRate(rate) {
+    this._setPossiblyInvalidProp('payRate', rate);
+    return this;
+  }
 }
 
 export class EmployeeList {

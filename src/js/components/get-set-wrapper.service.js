@@ -5,6 +5,7 @@ app.factory('GetSetWrapper', function () {
     constructor(model, propName, setterName) {
       this.lastError = null;
       this.getterSetter = function (value) {
+
         let trueModel;
         if (typeof model === 'function') {
           trueModel = model();
@@ -12,13 +13,22 @@ app.factory('GetSetWrapper', function () {
           trueModel = model;
         }
         if (!trueModel) { return; }
+
+        // Called as a getter.
         if (!arguments.length) {
           return trueModel[propName];
         }
-        try {
-          trueModel[setterName](value);
-        } catch (err) {
-          this.lastError = err;
+
+        // Called as a setter. Try using setter function. If not available just
+        // set the prop directly.
+        if (typeof trueModel[setterName] === 'function') {
+          try {
+            trueModel[setterName](value);
+          } catch (err) {
+            this.lastError = err;
+          }
+        } else {
+          trueModel[propName] = value;
         }
       };
     }
