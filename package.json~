@@ -1,0 +1,76 @@
+{
+<<<<<<< HEAD
+  "version": "1.0.0",
+=======
+  "version": "0.0.2",
+>>>>>>> release/0.0.1
+  "main": "src/js/index.js",
+  "scripts": {
+    "test": "open https://localhost:8080/test",
+    "clean": "rm -rf build/",
+    "_build": "NODE_ENV=production webpack -p --optimize-dedupe --progress",
+    "build": "npm run clean && npm run _build",
+    "start": "NODE_ENV=development webpack-dev-server --inline",
+    "tdd": "NODE_ENV=testing npm start & webpack --watch & karma start",
+    "archive": "npm prune --production"
+  },
+  "author": "Paul Anderson",
+  "license": "MIT",
+  "name": "schedule-calculator",
+  "description": "",
+  "directories": {
+    "test": "test"
+  },
+  "keywords": [],
+  "devDependencies": {
+    "angular": "^1.4.9",
+    "angular-animate": "^1.4.9",
+    "angular-messages": "^1.4.9",
+    "angular-mocks": "^1.4.9",
+    "angular-route": "^1.4.9",
+    "autoprefixer": "^6.3.1",
+    "babel-loader": "^6.2.1",
+    "babel-preset-es2015": "^6.3.13",
+    "css-loader": "^0.23.1",
+    "decimal": "0.0.2",
+    "eventsource-polyfill": "^0.9.6",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "html-loader": "^0.4.0",
+    "html-webpack-plugin": "^2.7.2",
+    "immutable": "^3.7.6",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.19",
+    "karma-chrome-launcher": "^0.2.2",
+    "karma-jasmine": "^0.3.6",
+    "lodash": "^4.0.1",
+    "moment": "^2.11.1",
+    "moment-timezone": "^0.5.0",
+    "ng-midway-tester": "^2.0.5",
+    "ngtemplate-loader": "^1.3.1",
+    "node-bourbon": "^4.2.3",
+    "node-neat": "^1.7.2",
+    "node-sass": "^3.4.2",
+    "postcss-loader": "^0.8.0",
+    "ramda": "^0.19.1",
+    "rx": "^4.0.7",
+    "sass-loader": "^3.1.2",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.12",
+    "webpack-dev-middleware": "^1.5.1",
+    "webpack-dev-server": "^1.14.1",
+    "webpack-hot-middleware": "^2.6.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/b-paul/schedule-calculator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/b-paul/schedule-calculator/issues"
+  },
+  "homepage": "https://github.com/b-paul/schedule-calculator#readme",
+  "dependencies": {
+    "file-loader": "^0.8.5"
+  }
+}
