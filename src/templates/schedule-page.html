@@ -2,11 +2,16 @@
 
 <form name="addShift"
       ng-submit="addShift.$valid && (editing = schedule.addShift(add.emp))">
-  <select required name="employee" ng-model="add.emp"
-          ng-options="employee.name for employee in employees.listEmployees()
-                      track by employee.id">
-  </select>
-  <input type="submit" value="Create">
+  <div class="employeebadge" ng-repeat="employee in employees.listEmployees()">
+    <input required type="radio" class="employeebadge-radio"
+           name="employee" ng-model="add.emp" ng-value="employee"
+           id="employeebadge-radio-{{ employee.id }}">
+    <label for="employeebadge-radio-{{ employee.id }}"
+           class="employeebadge-entity">
+      {{ employee.name }}
+    </label>
+  </div>
+<input type="submit" value="Create">
 </form>
 
 <form ng-show="editing" name="editShift">

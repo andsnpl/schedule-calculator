@@ -40,7 +40,13 @@ app.controller('SchedulePageCtrl', [
       'length', 'setLength'
     );
 
-    let emp = employeeList.addEmployee('test', 'test', 10);
+    $scope.add = {
+      emp: employeeList.addEmployee('test', 'test', 10)
+    };
+    employeeList.addEmployee('test2', 'test', 10);
+    employeeList.addEmployee('test3', 'test', 10);
+    employeeList.addEmployee('test4', 'test', 10);
+    employeeList.addEmployee('test5', 'test', 10);
   }
 ]);
 
