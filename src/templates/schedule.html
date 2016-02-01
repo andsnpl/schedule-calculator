@@ -11,6 +11,7 @@
           'width': shift.length * pctOfDayPerHour + '%'
         }">
       {{ shift.employee.name }}
+      <button delete-button="shift"></button>
     </li>
   </ul>
   <ol class="gridmarks" ng-class="hoursCountAsClassObject()">

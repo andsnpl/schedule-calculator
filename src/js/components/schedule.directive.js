@@ -1,6 +1,7 @@
 import app from '../schedule-calculator';
 
 import scheduleTemplate from '../../templates/schedule.html';
+import './delete-button.directive';
 
 app.directive('schedule', function () {
   return {
@@ -38,6 +39,10 @@ app.directive('schedule', function () {
           scope.pctOfDayPerHour = 1 / (last - first) * 100;
         }
       );
+
+      scope.$on('delete-item', function (evt, whichItem) {
+        scope.schedule.deleteShift(whichItem.id);
+      });
 
       // Allows the template to request a class definition used for responsive
       // styling.
