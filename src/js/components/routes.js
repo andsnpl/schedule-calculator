@@ -46,13 +46,15 @@ app.controller('SchedulePageCtrl', [
     $scope.schedule = schedule;
     $scope.employees = employeeList;
 
-    $scope.editing = null;
+    $scope.editing = {
+      currentShift: null
+    };
     $scope.editing_startTime = new GetSetWrapper(
-      function () { return $scope.editing; },
+      function () { return $scope.editing.currentShift; },
       'startTime', 'setStartTime'
     );
     $scope.editing_length = new GetSetWrapper(
-      function () { return $scope.editing; },
+      function () { return $scope.editing.currentShift; },
       'length', 'setLength'
     );
 
@@ -76,7 +78,7 @@ app.controller('SchedulePageCtrl', [
     employeeList.addEmployee('test4', 'test', 10);
 
     let added = employeeList.addEmployee('test5', 'test', 10);
-    $scope.editing = schedule.addShift(added);
+    $scope.editing.currentShift = schedule.addShift(added);
   }
 ]);
 
