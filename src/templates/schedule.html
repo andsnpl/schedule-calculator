@@ -1,6 +1,9 @@
 <div class="schedule">
   <ul class="shifts">
     <li class="shift" ng-repeat="shift in shifts"
+        ng-class="{
+          'active-shift': shift === activeShift
+        }"
         ng-style="{
           'left': (shift.startTime - schedule.openTime)
                     * pctOfDayPerHour + '%',

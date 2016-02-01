@@ -5,9 +5,11 @@ import scheduleTemplate from '../../templates/schedule.html';
 app.directive('schedule', function () {
   return {
     restrict: 'E',
+    replace: true,
     templateUrl: scheduleTemplate,
     scope: {
-      schedule: '=model'
+      schedule: '=model',
+      activeShift: '='
     },
     link: function (scope, element, attrs) {
       scope.shifts = scope.schedule.listShifts();
