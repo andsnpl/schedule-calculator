@@ -5,7 +5,7 @@
   <div class="employeebadge"
        ng-repeat="employee in availableEmployees">
     <input required type="radio" class="employeebadge-radio"
-           name="employee" ng-model="add.emp" ng-value="employee.id"
+           name="employee" ng-model="add.emp" ng-value="employee"
            id="employeebadge-radio-{{ employee.id }}">
     <label for="employeebadge-radio-{{ employee.id }}"
            class="employeebadge-entity">

@@ -23,8 +23,8 @@ let validateEmployee = function (employeeObj) {
 };
 
 export class Shift {
-  constructor (employeeId, startTime, length) {
-    this.employeeId = employeeId;
+  constructor (employee, startTime, length) {
+    this.employee = employee;
     this.startTime = startTime;
     this.length = length;
     this.id = createId();
@@ -69,11 +69,11 @@ export class Schedule {
     }
     this.closeTime = time;
   }
-  addShift(employeeId) {
-    if (this.isEmployeeWorking(employeeId)) {
+  addShift(employee) {
+    if (this.isEmployeeWorking(employee)) {
       throw new Error('Cannot add the same employee twice.');
     }
-    let shiftObj = new Shift(employeeId, this.openTime, 8);
+    let shiftObj = new Shift(employee, this.openTime, 8);
     this.shifts[shiftObj.id] = shiftObj;
     return shiftObj;
   }
@@ -95,11 +95,11 @@ export class Schedule {
     }
     return shifts;
   }
-  isEmployeeWorking(employeeId) {
+  isEmployeeWorking(employee) {
     let keys = Object.keys(this.shifts);
     let len = keys.length;
     for (let i = 0; i < len; i++) {
-      if (this.shifts[keys[i]].employeeId === employeeId) {
+      if (this.shifts[keys[i]].employee.id === employee.id) {
         return true;
       }
     }
