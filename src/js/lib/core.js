@@ -70,6 +70,9 @@ export class Schedule {
     this.closeTime = time;
   }
   addShift(employeeId) {
+    if (this.isEmployeeWorking(employeeId)) {
+      throw new Error('Cannot add the same employee twice.');
+    }
     let shiftObj = new Shift(employeeId, this.openTime, 8);
     this.shifts[shiftObj.id] = shiftObj;
     return shiftObj;
@@ -91,6 +94,16 @@ export class Schedule {
       shifts.push(this.shifts[keys[i]]);
     }
     return shifts;
+  }
+  isEmployeeWorking(employeeId) {
+    let keys = Object.keys(this.shifts);
+    let len = keys.length;
+    for (let i = 0; i < len; i++) {
+      if (this.shifts[keys[i]].employeeId === employeeId) {
+        return true;
+      }
+    }
+    return false;
   }
 }
 
