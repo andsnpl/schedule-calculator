@@ -1,8 +1,9 @@
 <div class="schedule">
   <ul class="shifts">
     <li class="shift" ng-repeat="shift in shifts"
+        ng-click="activeShift.currentShift = shift"
         ng-class="{
-          'active-shift': shift === activeShift
+          'active-shift': shift === activeShift.currentShift
         }"
         ng-style="{
           'left': (shift.startTime - schedule.openTime)

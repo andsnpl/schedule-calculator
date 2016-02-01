@@ -6,6 +6,8 @@ import schedulePageTemplate from '../../templates/schedule-page.html';
 import './schedule.directive';
 import './slider.directive';
 
+import employeePageTemplate from '../../templates/employee-page.html';
+
 app.config([
   '$routeProvider',
   function ($routeProvider, $sce) {
@@ -13,6 +15,10 @@ app.config([
       .when('/', {
         templateUrl: schedulePageTemplate,
         controller: 'SchedulePageCtrl as ctrl'
+      })
+      .when('/employees', {
+        templateUrl: employeePageTemplate,
+        controller: 'EmployeePageCtrl as ctrl'
       })
       .otherwise('/');
   }
@@ -22,6 +28,15 @@ app.controller('EmployeePageCtrl', [
   '$scope', 'employeeList',
   function ($scope, employeeList) {
     $scope.employees = employeeList;
+
+    // TODO deletet this dummy data
+    employeeList.addEmployee('Alex', 'test', 10);
+    employeeList.addEmployee('Brit', 'test', 10);
+    employeeList.addEmployee('Chris', 'test', 10);
+    employeeList.addEmployee('Drew', 'test', 10);
+    employeeList.addEmployee('Evan', 'test', 10);
+    employeeList.addEmployee('Frida', 'test', 10);
+    employeeList.addEmployee('Glen', 'test', 10);
   }
 ]);
 
@@ -31,13 +46,15 @@ app.controller('SchedulePageCtrl', [
     $scope.schedule = schedule;
     $scope.employees = employeeList;
 
-    $scope.editing = null;
+    $scope.editing = {
+      currentShift: null
+    };
     $scope.editing_startTime = new GetSetWrapper(
-      function () { return $scope.editing; },
+      function () { return $scope.editing.currentShift; },
       'startTime', 'setStartTime'
     );
     $scope.editing_length = new GetSetWrapper(
-      function () { return $scope.editing; },
+      function () { return $scope.editing.currentShift; },
       'length', 'setLength'
     );
 
@@ -52,6 +69,7 @@ app.controller('SchedulePageCtrl', [
       $scope.availableEmployees = availableEmployees();
     });
 
+    // TODO: remove this dummy code
     $scope.add = {
       emp: employeeList.addEmployee('test', 'test', 10)
     };
@@ -60,7 +78,7 @@ app.controller('SchedulePageCtrl', [
     employeeList.addEmployee('test4', 'test', 10);
 
     let added = employeeList.addEmployee('test5', 'test', 10);
-    $scope.editing = schedule.addShift(added);
+    $scope.editing.currentShift = schedule.addShift(added);
   }
 ]);
 
