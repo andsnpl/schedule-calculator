@@ -42,7 +42,6 @@ app.controller('SchedulePageCtrl', [
 
     let availableEmployees = function () {
       let isAvailable = function (employee) {
-        console.log($scope.schedule.isEmployeeWorking(employee.id));
         return !$scope.schedule.isEmployeeWorking(employee.id);
       };
       return $scope.employees.listEmployees()

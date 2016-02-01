@@ -5,7 +5,6 @@ app.factory('GetSetWrapper', function () {
     constructor(model, propName, setterName) {
       this.lastError = null;
       this.getterSetter = function (value) {
-        console.log(`invoking getterSetter with ${arguments.length} arguments`);
         let trueModel;
         if (typeof model === 'function') {
           trueModel = model();
