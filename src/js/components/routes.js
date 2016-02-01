@@ -6,6 +6,8 @@ import schedulePageTemplate from '../../templates/schedule-page.html';
 import './schedule.directive';
 import './slider.directive';
 
+import employeePageTemplate from '../../templates/employee-page.html';
+
 app.config([
   '$routeProvider',
   function ($routeProvider, $sce) {
@@ -13,6 +15,10 @@ app.config([
       .when('/', {
         templateUrl: schedulePageTemplate,
         controller: 'SchedulePageCtrl as ctrl'
+      })
+      .when('/employees', {
+        templateUrl: employeePageTemplate,
+        controller: 'EmployeePageCtrl as ctrl'
       })
       .otherwise('/');
   }
@@ -22,6 +28,15 @@ app.controller('EmployeePageCtrl', [
   '$scope', 'employeeList',
   function ($scope, employeeList) {
     $scope.employees = employeeList;
+
+    // TODO deletet this dummy data
+    employeeList.addEmployee('Alex', 'test', 10);
+    employeeList.addEmployee('Brit', 'test', 10);
+    employeeList.addEmployee('Chris', 'test', 10);
+    employeeList.addEmployee('Drew', 'test', 10);
+    employeeList.addEmployee('Evan', 'test', 10);
+    employeeList.addEmployee('Frida', 'test', 10);
+    employeeList.addEmployee('Glen', 'test', 10);
   }
 ]);
 
@@ -52,6 +67,7 @@ app.controller('SchedulePageCtrl', [
       $scope.availableEmployees = availableEmployees();
     });
 
+    // TODO: remove this dummy code
     $scope.add = {
       emp: employeeList.addEmployee('test', 'test', 10)
     };

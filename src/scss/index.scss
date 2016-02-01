@@ -6,6 +6,50 @@ body {
   font-family: sans-serif;
 }
 
+ng-view::after {
+  content: '';
+  display: block;
+  height: 3rem;
+}
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: #0800b0;
+  color: #eee;
+  z-index: 1000;
+}
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  width: 100%;
+}
+
+.tab {
+  display: inline-block;
+  padding: 0 1.5rem;
+  flex-grow: 1;
+  text-align: center;
+  border-left: 1px solid #b2b2b2;
+
+  &:first-child {
+    border-left: none;
+  }
+
+  a,
+  a:hover,
+  a:active,
+  a:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
 .schedule {
   position: relative;
   display: inline-block; /* don't shrink smaller than content */
@@ -165,4 +209,34 @@ body {
     border-radius: 50%;
     background-color: #0c0;
   }
+}
+
+.employee-list {
+  list-style: none;
+  padding: 0 0 7rem 0;
+  margin: 0;
+}
+
+.employee {
+  font-size: 1.1rem;
+  border-bottom: 1px solid #b2b2b2;
+  padding: 1rem;
+
+  &:first-child {
+    border-top: 1px solid #b2b2b2;
+  }
+}
+
+.addemployee {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem 0.5rem 4.25rem 0.5rem;
+  background-color: #fec;
+}
+
+.addemployee-input {
+  display: block;
+  margin: 0.25rem;
 }

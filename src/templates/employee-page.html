@@ -1,0 +1,17 @@
+<ul class="employee-list">
+  <li class="employee" ng-repeat="employee in employees.listEmployees()">
+    {{ employee.name }}
+  </li>
+</ul>
+
+<form class="addemployee" name="addEmployee"
+      ng-submit="addEmployee.$valid
+        && employees.addEmployee(add.name, add.role, add.rate)">
+  <input required class="addemployee-input" type="text"
+         name="name" ng-model="add.name">
+  <input class="addemployee-input" type="text"
+         name="role" ng-model="add.role">
+  <input class="addemployee-input" type="text"
+         name="payRate" ng-model="add.rate">
+  <input type="submit" value="Save">
+</form>
