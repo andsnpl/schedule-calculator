@@ -1,0 +1,31 @@
+<schedule model="schedule" active-shift="editing"></schedule>
+
+<form name="addShift"
+      ng-submit="addShift.$valid
+        && (editing.currentShift = schedule.addShift(add.emp))">
+  <div class="employeebadge"
+       ng-repeat="employee in availableEmployees">
+    <input required type="radio" class="employeebadge-radio"
+           name="employee" ng-model="add.emp" ng-value="employee"
+           id="employeebadge-radio-{{ employee.id }}">
+    <label for="employeebadge-radio-{{ employee.id }}"
+           class="employeebadge-entity">
+      {{ employee.name }}
+    </label>
+  </div>
+<input type="submit" value="Create">
+</form>
+
+<form ng-show="editing.currentShift" name="editShift">
+  <slider dim="x" max="24" getter-setter="editing_startTime.getterSetter">
+  </slider>
+  <input type="number" name="startTime" id="editing_startTime"
+         ng-model="editing_startTime.getterSetter"
+         ng-model-options="{ getterSetter: true }">
+  <slider dim="x" max="24" getter-setter="editing_length.getterSetter">
+  </slider>
+  <input type="number" name="length" id="editing_length"
+         ng-model="editing_length.getterSetter"
+         ng-model-options="{ getterSetter: true }">
+  <input type="button" value="Done" ng-click="editing = null">
+</form>

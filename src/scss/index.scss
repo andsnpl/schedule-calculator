@@ -1,0 +1,246 @@
+$hourminwidth: 1.25rem;
+$meddatewidth: 5rem;
+$longdatewidth: 6.75rem;
+
+body {
+  font-family: sans-serif;
+}
+
+ng-view::after {
+  content: '';
+  display: block;
+  height: 3rem;
+}
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  background-color: #0800b0;
+  color: #eee;
+  z-index: 1000;
+}
+
+.tabs {
+  list-style: none;
+  padding: 0;
+  margin: 0.5rem 0;
+  display: flex;
+  width: 100%;
+}
+
+.tab {
+  display: inline-block;
+  padding: 0 1.5rem;
+  flex-grow: 1;
+  text-align: center;
+  border-left: 1px solid #b2b2b2;
+
+  &:first-child {
+    border-left: none;
+  }
+
+  a,
+  a:hover,
+  a:active,
+  a:visited {
+    color: inherit;
+    text-decoration: none;
+  }
+}
+
+.schedule {
+  position: relative;
+  display: inline-block; /* don't shrink smaller than content */
+  min-width: 100%; /* grow with screen */
+  box-sizing: border-box;
+  padding: 1rem;
+  white-space: nowrap;
+}
+
+.shifts {
+  list-style: none;
+  padding: 1.85rem 0 0 0;
+  margin: 0 0 -1.5rem 0; /* negative bottom compensates for widthhack adding
+    extra space below */
+  min-height: 3rem;
+}
+
+.shift {
+  position: relative;
+  display: block;
+  height: 1.35rem;
+  margin: 0.75rem 0;
+  background-color: #0c0;
+}
+
+.active-shift {
+  background-color: #ffe400;
+}
+
+.gridmarks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position:absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: -1;
+  display: flex;
+}
+
+.gridmarks-col {
+  display: inline-block;
+  box-sizing: border-box;
+  border-left: 1px solid #b2b2b2;
+  padding: 0 1% 0 0.25%;
+  min-width: $hourminwidth;
+}
+
+.gridmarks-header {
+  display: block;
+  position: relative;
+  height: 2rem;
+  border-bottom: 1px solid #e4e4e4;
+}
+
+.gridmarks-label {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #505050;
+
+  /* initial time display */
+
+  &.shortlabel {
+    display: block;
+  }
+
+  &.medlabel,
+  &.longlabel {
+    display: none;
+  }
+
+  /* alternate display for time based on both width and number of columns */
+
+  @mixin med {
+    width: $meddatewidth;
+
+    &.medlabel {
+      display: block;
+    }
+
+    &.shortlabel,
+    &.longlabel {
+      display: none;
+    }
+  }
+
+  @mixin long {
+    width: $longdatewidth;
+
+    &.longlabel {
+      display: block;
+    }
+
+    &.shortlabel,
+    &.medlabel {
+      display: none;
+    }
+  }
+
+  @for $numhours from 1 through 24 {
+    .hourscount-#{$numhours} & {
+      @media only screen and (min-width: $numhours * $meddatewidth) {
+        @include med;
+      }
+
+      @media only screen and (min-width: $numhours * $longdatewidth) {
+        @include long;
+      }
+    }
+  }
+}
+
+.widthhack {
+  min-width: $hourminwidth;
+  display: inline-block;
+}
+
+.employeebadge {
+  display: inline-block;
+}
+
+.employeebadge-entity {
+  display: inline-block;
+  padding: 0.3rem;
+  border-radius: 0.4rem;
+  margin: 0.5rem;
+  background-color: #0c0;
+}
+
+.employeebadge-radio {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+
+  &:checked + .employeebadge-entity {
+    background-color: #ffe400;
+  }
+}
+
+.slider {
+  position: relative;
+  width: 10rem;
+  height: 1px;
+  background-color: blue;
+  margin: 1rem;
+
+  .bead {
+    position: absolute;
+    transform: translate3d(-50%, -50%, 0);
+    height: 0.7rem;
+    width: 0.7rem;
+    border-radius: 50%;
+    background-color: #0c0;
+  }
+}
+
+.employee-list {
+  list-style: none;
+  padding: 0 0 7rem 0;
+  margin: 0;
+}
+
+.employee {
+  font-size: 1.1rem;
+  border-bottom: 1px solid #b2b2b2;
+  padding: 1rem;
+
+  &:first-child {
+    border-top: 1px solid #b2b2b2;
+  }
+}
+
+.addemployee {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem 0.5rem 4.25rem 0.5rem;
+  background-color: #fec;
+}
+
+.addemployee-input {
+  display: block;
+  margin: 0.25rem;
+}
+
+.active-employee {
+  background-color: #eee4c0;
+}
