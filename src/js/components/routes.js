@@ -2,8 +2,9 @@ import app from '../schedule-calculator';
 import './get-set-wrapper.service';
 
 import schedulePageTemplate from '../../templates/schedule-page.html';
-// custom directives used in schedule page
+// custom directives used in schedule page template
 import './schedule.directive';
+import './slider.directive';
 
 app.config([
   '$routeProvider',
@@ -57,7 +58,9 @@ app.controller('SchedulePageCtrl', [
     employeeList.addEmployee('test2', 'test', 10);
     employeeList.addEmployee('test3', 'test', 10);
     employeeList.addEmployee('test4', 'test', 10);
-    employeeList.addEmployee('test5', 'test', 10);
+
+    let added = employeeList.addEmployee('test5', 'test', 10);
+    $scope.editing = schedule.addShift(added);
   }
 ]);
 

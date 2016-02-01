@@ -16,10 +16,14 @@
 </form>
 
 <form ng-show="editing" name="editShift">
-  <input type="number" name="startTime"
+  <slider dim="x" max="24" getter-setter="editing_startTime.getterSetter">
+  </slider>
+  <input type="number" name="startTime" id="editing_startTime"
          ng-model="editing_startTime.getterSetter"
          ng-model-options="{ getterSetter: true }">
-  <input type="number" name="length"
+  <slider dim="x" max="24" getter-setter="editing_length.getterSetter">
+  </slider>
+  <input type="number" name="length" id="editing_length"
          ng-model="editing_length.getterSetter"
          ng-model-options="{ getterSetter: true }">
   <input type="button" value="Done" ng-click="editing = null">
