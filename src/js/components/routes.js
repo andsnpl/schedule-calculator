@@ -40,8 +40,21 @@ app.controller('SchedulePageCtrl', [
       'length', 'setLength'
     );
 
+    let availableEmployees = function () {
+      let isAvailable = function (employee) {
+        console.log($scope.schedule.isEmployeeWorking(employee.id));
+        return !$scope.schedule.isEmployeeWorking(employee.id);
+      };
+      return $scope.employees.listEmployees()
+        .filter(isAvailable);
+    };
+
+    $scope.$watchCollection('schedule.shifts', function () {
+      $scope.availableEmployees = availableEmployees();
+    });
+
     $scope.add = {
-      emp: employeeList.addEmployee('test', 'test', 10)
+      emp: employeeList.addEmployee('test', 'test', 10).id
     };
     employeeList.addEmployee('test2', 'test', 10);
     employeeList.addEmployee('test3', 'test', 10);

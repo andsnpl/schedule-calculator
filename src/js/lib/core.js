@@ -92,6 +92,17 @@ export class Schedule {
     }
     return shifts;
   }
+  isEmployeeWorking(employeeId) {
+    let keys = Object.keys(this.shifts);
+    let len = keys.length;
+    for (let i = 0; i < len; i++) {
+      console.log(this.shifts[keys[i]]);
+      if (this.shifts[keys[i]].employeeId === employeeId) {
+        return true;
+      }
+    }
+    return false;
+  }
 }
 
 export class Employee {
