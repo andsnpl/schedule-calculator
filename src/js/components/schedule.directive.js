@@ -1,7 +1,9 @@
-import app from '../schedule-calculator';
+import angular from 'angular';
 
 import scheduleTemplate from '../../templates/schedule.html';
 import './delete-button.directive';
+
+let app = angular.module('scheduleCalculator');
 
 app.directive('schedule', function () {
   return {

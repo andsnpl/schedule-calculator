@@ -1,6 +1,7 @@
-import app from '../schedule-calculator';
-
+import angular from 'angular';
 import sliderTemplate from '../../templates/slider.html';
+
+let app = angular.module('scheduleCalculator');
 
 app.directive('slider', [
   '$document', '$rootScope',

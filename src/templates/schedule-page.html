@@ -1,8 +1,7 @@
 <schedule model="schedule" active-shift="editing"></schedule>
 
 <form name="addShift"
-      ng-submit="addShift.$valid
-        && (editing.currentShift = schedule.addShift(add.emp))">
+      ng-submit="addShift.$valid && submit()">
   <div class="employeebadge"
        ng-repeat="employee in availableEmployees">
     <input required type="radio" class="employeebadge-radio"
@@ -27,5 +26,5 @@
   <input type="number" name="length" id="editing_length"
          ng-model="editing_length.getterSetter"
          ng-model-options="{ getterSetter: true }">
-  <input type="button" value="Done" ng-click="editing = null">
+  <input type="button" value="Done" ng-click="editing.currentShift = null">
 </form>

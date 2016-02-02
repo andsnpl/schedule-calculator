@@ -1,4 +1,6 @@
-import app from '../schedule-calculator';
+import angular from 'angular';
+
+let app = angular.module('scheduleCalculator');
 
 app.factory('GetSetWrapper', function () {
   return class GetSetWrapper {
