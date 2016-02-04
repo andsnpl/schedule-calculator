@@ -11,7 +11,8 @@
           'width': shift.length * pctOfDayPerHour + '%'
         }">
       {{ shift.employee.name }}
-      <button class="button delete-button" ng-click="deleteShift(shift, $event)">
+      <button class="button delete-button"
+              ng-click="deleteShift(shift, $event)">
         &times;
       </button>
     </li>

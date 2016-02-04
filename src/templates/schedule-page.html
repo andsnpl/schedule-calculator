@@ -4,15 +4,16 @@
       ng-submit="addShift.$valid && submitShift()">
   <div class="employeebadge"
        ng-repeat="employee in availableEmployees">
-    <input required type="radio" class="employeebadge-radio" name="employee"
+    <input required type="radio" class="employeebadge-radio"
+           name="employee" id="employeebadge-radio-{{ employee.id }}"
            ng-model="editing.selectedEmployee" ng-value="employee"
-           id="employeebadge-radio-{{ employee.id }}">
+           ng-blur="editing.selectedEmployee = null">
     <label for="employeebadge-radio-{{ employee.id }}"
            class="employeebadge-entity">
       {{ employee.name }}
     </label>
   </div>
-<input type="submit" value="Create">
+<input type="submit" value="Create" ng-mousedown="$event.preventDefault()">
 </form>
 
 <form ng-show="editing.currentShift" name="editShift">

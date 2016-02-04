@@ -36,11 +36,7 @@ app.controller('SchedulePageCtrl', [
     $scope.submitShift = function () {
       $scope.editing.currentShift
         = schedule.addShift($scope.editing.selectedEmployee);
-      if ($scope.editing.selectedEmployee === $scope.availableEmployees[0]) {
-        $scope.editing.selectedEmployee = $scope.availableEmployees[1];
-      } else {
-        $scope.editing.selectedEmployee = $scope.availableEmployees[0];
-      }
+      $scope.editing.selectedEmployee = null;
     };
   }
 ]);
