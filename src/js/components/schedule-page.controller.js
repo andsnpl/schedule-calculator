@@ -10,7 +10,8 @@ app.controller('SchedulePageCtrl', [
     $scope.employees = employeeList;
 
     $scope.editing = {
-      currentShift: null
+      currentShift: null,
+      selectedEmployee: null
     };
     $scope.editing_startTime = new GetSetWrapper(
       function () { return $scope.editing.currentShift; },
@@ -32,12 +33,13 @@ app.controller('SchedulePageCtrl', [
       $scope.availableEmployees = availableEmployees();
     });
 
-    $scope.submit = function () {
-      $scope.editing.currentShift = schedule.addShift($scope.add.emp);
-      if ($scope.add.emp === $scope.availableEmployees[0]) {
-        $scope.add.emp = $scope.availableEmployees[1];
+    $scope.submitShift = function () {
+      $scope.editing.currentShift
+        = schedule.addShift($scope.editing.selectedEmployee);
+      if ($scope.editing.selectedEmployee === $scope.availableEmployees[0]) {
+        $scope.editing.selectedEmployee = $scope.availableEmployees[1];
       } else {
-        $scope.add.emp = $scope.availableEmployees[0];
+        $scope.editing.selectedEmployee = $scope.availableEmployees[0];
       }
     };
   }
