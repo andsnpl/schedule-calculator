@@ -1,7 +1,6 @@
 import angular from 'angular';
 
 import scheduleTemplate from '../../templates/schedule.html';
-import './delete-button.directive';
 
 let app = angular.module('scheduleCalculator');
 
@@ -42,9 +41,10 @@ app.directive('schedule', function () {
         }
       );
 
-      scope.$on('delete-item', function (evt, whichItem) {
-        scope.schedule.deleteShift(whichItem.id);
-      });
+      scope.deleteShift = function (shift, $event) {
+        $event.preventDefault();
+        scope.schedule.deleteShift(shift.id);
+      };
 
       // Allows the template to request a class definition used for responsive
       // styling.
