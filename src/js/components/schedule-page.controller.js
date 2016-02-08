@@ -9,18 +9,10 @@ app.controller('SchedulePageCtrl', [
     $scope.schedule = schedule;
     $scope.employees = employeeList;
 
-    $scope.editing = {
+    $scope.editTarget = {
       currentShift: null,
       selectedEmployee: null
     };
-    $scope.editing_startTime = new GetSetWrapper(
-      function () { return $scope.editing.currentShift; },
-      'startTime', 'setStartTime'
-    );
-    $scope.editing_length = new GetSetWrapper(
-      function () { return $scope.editing.currentShift; },
-      'length', 'setLength'
-    );
 
     let availableEmployees = function () {
       let isAvailable = function (employee) {
@@ -33,10 +25,34 @@ app.controller('SchedulePageCtrl', [
       $scope.availableEmployees = availableEmployees();
     });
 
+
+    $scope.selectEmployee = function (emp) {
+      let selected = $scope.editTarget.selectedEmployee;
+      if (selected && (selected === emp.id)) {
+        $scope.editTarget = {
+          currentShift: schedule.addShift(emp).id,
+          selectedEmployee: null
+        };
+      }
+    };
+
+    $scope.closeShift = function () {
+      $scope.editTarget.currentShift = null;
+    };
+
+    $scope.deleteShift = function (shift) {
+      schedule.deleteShift(shift.id);
+      $scope.editTarget.currentShift = null;
+    };
+
     $scope.submitShift = function () {
-      $scope.editing.currentShift
-        = schedule.addShift($scope.editing.selectedEmployee);
-      $scope.editing.selectedEmployee = null;
+      let current = $scope.editTarget.currentShift;
+      let shift = current && schedule.shifts[current.id];
+      if (!shift) { return; }
+      shift.setStartTime(current.startTime);
+      shift.setLength(current.length);
+      console.log('still here', shift);
+      $scope.editTarget.currentShift = null;
     };
   }
 ]);

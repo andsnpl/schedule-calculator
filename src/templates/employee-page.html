@@ -1,27 +1,39 @@
 <ul class="employee-list">
   <li class="employee"
       ng-repeat="employee in employees"
-      ng-click="editing.currentEmployee = employee"
-      ng-class="{
-        'active-employee': employee === editing.currentEmployee
-      }">
+      ng-click="editEmployee(employee)">
     {{ employee.name }}
-    <button class="button delete-button" ng-click="deleteEmployee(employee, $event)">
-      &times;
-    </button>
   </li>
 </ul>
+<input type="button"
+       class="button round-button giant-button add-button new-employee"
+       ng-click="addNewEmployee()" value="&plus;">
 
-<form class="addemployee" name="addEmployee"
-      ng-submit="addEmployee.$valid && submitEmployee()">
-  <input required class="addemployee-input" type="text"
-         name="name" ng-model="editing_name.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input class="addemployee-input" type="text"
-         name="role" ng-model="editing_role.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input class="addemployee-input" type="text"
-         name="payRate" ng-model="editing_payRate.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input type="submit" value="Save">
+<form class="addemployee" name="addEmployee" ng-if="editTarget.currentEmployee">
+  <label class="material-label">
+    <input required class="material-input" type="text"
+           name="name" ng-model="editTarget.currentEmployee.name">
+    name
+  </label>
+  <label class="material-label">
+    <input class="material-input" type="text"
+           name="role" ng-model="editTarget.currentEmployee.role">
+    role
+  </label>
+  <label class="material-label">
+    <input class="material-input" type="text"
+           name="payRate" ng-model="editTarget.currentEmployee.payRate">
+    pay rate
+  </label>
+
+  <input type="button" value="&minus;" alt="Delete"
+         class="button round-button giant-button delete-button"
+         ng-click="$event.preventDefault();
+           deleteEmployee(editTarget.currentEmployee)">
+  <input type="button" value="&times;" alt="Cancel"
+         class="button round-button giant-button close-button"
+         ng-click="closeEmployee()">
+  <input type="button" value="&check;" alt="Save"
+         class="button round-button giant-button save-button"
+         ng-click="addEmployee.$valid && submitEmployee()">
 </form>

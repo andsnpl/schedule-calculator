@@ -1,5 +1,6 @@
 import angular from 'angular';
 
+import './nav.controller';
 import './schedule-page.controller';
 import './employee-page.controller';
 
@@ -16,7 +17,7 @@ app.config([
   '$routeProvider',
   function ($routeProvider, $sce) {
     $routeProvider
-      .when('/', {
+      .when('/schedule', {
         templateUrl: schedulePageTemplate,
         controller: 'SchedulePageCtrl as ctrl'
       })
@@ -24,6 +25,6 @@ app.config([
         templateUrl: employeePageTemplate,
         controller: 'EmployeePageCtrl as ctrl'
       })
-      .otherwise('/');
+      .otherwise('/schedule');
   }
 ]);

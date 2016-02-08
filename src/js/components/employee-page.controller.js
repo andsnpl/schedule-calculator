@@ -8,24 +8,12 @@ app.controller('EmployeePageCtrl', [
   function ($scope, employeeList, GetSetWrapper) {
     $scope.employeeList = employeeList;
 
-    $scope.editing = {
-      currentEmployee: {}
+    let resetEditTarget = function () {
+      $scope.editTarget = {
+        currentEmployee: null
+      };
     };
-
-    $scope.editing_name = new GetSetWrapper(
-      function () { return $scope.editing.currentEmployee; },
-      'name', 'setName'
-    );
-
-    $scope.editing_role = new GetSetWrapper(
-      function () { return $scope.editing.currentEmployee; },
-      'role', 'setRole'
-    );
-
-    $scope.editing_payRate = new GetSetWrapper(
-      function () { return $scope.editing.currentEmployee; },
-      'payRate', 'setPayRate'
-    );
+    resetEditTarget();
 
     let getEmployees = function () {
       return employeeList.listEmployees()
@@ -33,28 +21,50 @@ app.controller('EmployeePageCtrl', [
     };
     $scope.employees = getEmployees();
     $scope.$watchCollection('employeeList.employees', function () {
-      let idx = $scope.employees.indexOf($scope.editing.currentEmployee);
-      // Don't select where none is already selected.
-      idx < 0 && (idx = NaN);
       $scope.employees = getEmployees();
-
-      let nextIdx = Math.min(idx, $scope.employees.length);
-      $scope.editing.currentEmployee = $scope.employees[nextIdx];
     });
 
-    $scope.submitEmployee = function () {
-      // If the currentEmployee already has an id, just clear currentEmployee
-      // If not, it's new data we need to add, but we still clear at the end.
-      let current = $scope.editing.currentEmployee;
-      if (!('id' in current)) {
-        employeeList.addEmployee(current.name, current.role, current.payRate);
-      }
-      $scope.editing.currentEmployee = {};
+    $scope.addNewEmployee = function () {
+      $scope.editTarget = {
+        currentEmployee: {
+          name: '',
+          role: '',
+          payRate: 0.00
+        }
+      };
     };
 
-    $scope.deleteEmployee = function (employee, $event) {
-      $event.preventDefault();
+    $scope.submitEmployee = function () {
+      // If the currentEmployee already has an id, save to that id
+      // If not, it's new data we need to add, but we still clear at the end.
+      let current = $scope.editTarget.currentEmployee;
+      let emp = employeeList.employees[current.id];
+      if (!('id' in current && emp)) {
+        employeeList.addEmployee(current.name, current.role, current.payRate);
+      } else {
+        emp.setName(current.name);
+        emp.setRole(current.role);
+        emp.setPayRate(current.payRate);
+      }
+      resetEditTarget();
+    };
+
+    $scope.closeEmployee = resetEditTarget;
+
+    $scope.editEmployee = function (employee) {
+      $scope.editTarget = {
+        currentEmployee: {
+          id: employee.id,
+          name: employee.name,
+          role: employee.role,
+          payRate: employee.payRate
+        }
+      };
+    };
+
+    $scope.deleteEmployee = function (employee) {
       employeeList.deleteEmployee(employee.id);
+      resetEditTarget();
     };
   }
 ]);

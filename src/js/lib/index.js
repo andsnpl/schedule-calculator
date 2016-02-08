@@ -7,7 +7,7 @@ app.factory('employeeList', function () {
   let employeeList = new EmployeeList();
   // TODO: delete this dummy data
   employeeList._dummy = [
-    employeeList.addEmployee('Vandell', 'test', 10),
+    employeeList.addEmployee('Vandell', 'test', 10000),
     employeeList.addEmployee('Wanda', 'test', 10),
     employeeList.addEmployee('Xavier', 'test', 10),
     employeeList.addEmployee('Yara', 'test', 10),
@@ -27,6 +27,30 @@ app.factory('schedule', function () {
   let schedule = new Schedule();
   schedule._dummy = schedule.addShift({
     id: 99,
+    name: 'Zane',
+    role: 'test',
+    payRate: 10
+  });
+  schedule.addShift({
+    id: 98,
+    name: 'Zane',
+    role: 'test',
+    payRate: 10
+  });
+  schedule.addShift({
+    id: 97,
+    name: 'Zane',
+    role: 'test',
+    payRate: 10
+  });
+  schedule.addShift({
+    id: 96,
+    name: 'Zane',
+    role: 'test',
+    payRate: 10
+  });
+  schedule.addShift({
+    id: 95,
     name: 'Zane',
     role: 'test',
     payRate: 10

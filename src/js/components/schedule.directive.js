@@ -11,7 +11,7 @@ app.directive('schedule', function () {
     templateUrl: scheduleTemplate,
     scope: {
       schedule: '=model',
-      activeShift: '='
+      editTarget: '='
     },
     link: function (scope, element, attrs) {
       scope.shifts = scope.schedule.listShifts();
@@ -41,10 +41,18 @@ app.directive('schedule', function () {
         }
       );
 
-      scope.deleteShift = function (shift, $event) {
-        $event.preventDefault();
-        scope.schedule.deleteShift(shift.id);
-      };
+      scope.$watch('editTarget.currentShift.id', function (id) {
+        let shift = scope.schedule.shifts[id];
+        if (!shift) {
+          scope.editTarget.currentShift = null;
+        } else {
+          scope.editTarget.currentShift = {
+            id: id,
+            startTime: shift.startTime,
+            length: shift.length
+          };
+        }
+      });
 
       // Allows the template to request a class definition used for responsive
       // styling.

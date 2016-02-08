@@ -52,8 +52,8 @@ export class Shift {
 
 export class Schedule {
   constructor () {
-    this.openTime = 8.0;
-    this.closeTime = 22.0;
+    this.openTime = 0.0;
+    this.closeTime = 24.0;
     this.weekday = 1;
     this.shifts = {};
   }
