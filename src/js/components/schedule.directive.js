@@ -28,7 +28,7 @@ app.directive('schedule', function () {
           let first = newValues[0].getHours();
           let last = newValues[1].getHours();
           let hours = [];
-          for (var i = first; i < last; i++) {
+          for (var i = first; i <= last; i++) {
             let d = new Date();
             d.setMilliseconds(0);
             d.setSeconds(0);
