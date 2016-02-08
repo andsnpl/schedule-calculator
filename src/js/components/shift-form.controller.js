@@ -13,13 +13,21 @@ app.factory('navigateToShiftForm', [
 ]);
 
 app.controller('ShiftFormCtrl', [
-  '$scope', '$location', 'schedule', 'shiftEditTarget',
-  function ($scope, $location, schedule, shiftEditTarget) {
-    $scope.editTarget = shiftEditTarget;
+  '$scope', '$location', '$routeParams', 'schedule', 'shiftEditTarget',
+  function ($scope, $location, $routeParams, schedule, shiftEditTarget) {
 
     let closeForm = function () {
       $scope.editTarget.currentShift = null;
       $location.path('/schedule');
+    };
+    let shift = schedule.shifts[$routeParams.id];
+    if (!shift) { closeForm(); }
+
+    $scope.editTarget = shiftEditTarget;
+    $scope.editTarget.currentShift = {
+      id: shift.id,
+      startTime: shift.startTime,
+      endTime: shift.endTime
     };
 
     $scope.closeShift = closeForm;

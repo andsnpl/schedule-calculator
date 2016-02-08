@@ -48,11 +48,6 @@ app.directive('schedule', [
           if (!shift) {
             scope.editTarget.currentShift = null;
           } else {
-            scope.editTarget.currentShift = {
-              id: id,
-              startTime: shift.startTime,
-              endTime: shift.endTime
-            };
             navigateToShiftForm(id);
           }
         };

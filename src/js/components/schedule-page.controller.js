@@ -31,11 +31,6 @@ app.controller('SchedulePageCtrl', [
       if (selected && (selected === emp.id)) {
         let shift = schedule.addShift(emp);
         $scope.editTarget.selectedEmployee = null;
-        $scope.editTarget.currentShift = {
-          id: shift.id,
-          startTime: shift.startTime,
-          endTime: shift.endTime
-        };
         navigateToShiftForm(shift.id);
       }
     };
