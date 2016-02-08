@@ -28,9 +28,9 @@ app.directive('schedule', [
           ['schedule.openTime', 'schedule.closeTime'],
           function (newValues) {
             let first = newValues[0].getHours();
-            let last = newValues[1].getHours();
+            let last = newValues[1].getHours() + 1;
             let hours = [];
-            for (var i = first; i <= last; i++) {
+            for (var i = first; i < last; i++) {
               let d = new Date();
               d.setMilliseconds(0);
               d.setSeconds(0);
