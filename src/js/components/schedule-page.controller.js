@@ -4,15 +4,16 @@ import './get-set-wrapper.service';
 let app = angular.module('scheduleCalculator');
 
 app.controller('SchedulePageCtrl', [
-  '$scope', 'schedule', 'employeeList', 'GetSetWrapper',
-  function ($scope, schedule, employeeList, GetSetWrapper) {
+  '$scope', 'schedule', 'employeeList',
+  'shiftEditTarget', 'navigateToShiftForm',
+  function (
+    $scope, schedule, employeeList, shiftEditTarget, navigateToShiftForm
+  ) {
     $scope.schedule = schedule;
     $scope.employees = employeeList;
 
-    $scope.editTarget = {
-      currentShift: null,
-      selectedEmployee: null
-    };
+    $scope.editTarget = shiftEditTarget;
+    $scope.editTarget.currentShift = null;
 
     let availableEmployees = function () {
       let isAvailable = function (employee) {
@@ -25,34 +26,18 @@ app.controller('SchedulePageCtrl', [
       $scope.availableEmployees = availableEmployees();
     });
 
-
     $scope.selectEmployee = function (emp) {
       let selected = $scope.editTarget.selectedEmployee;
       if (selected && (selected === emp.id)) {
-        $scope.editTarget = {
-          currentShift: schedule.addShift(emp).id,
-          selectedEmployee: null
+        let shift = schedule.addShift(emp);
+        $scope.editTarget.selectedEmployee = null;
+        $scope.editTarget.currentShift = {
+          id: shift.id,
+          startTime: shift.startTime,
+          endTime: shift.endTime
         };
+        navigateToShiftForm(shift.id);
       }
-    };
-
-    $scope.closeShift = function () {
-      $scope.editTarget.currentShift = null;
-    };
-
-    $scope.deleteShift = function (shift) {
-      schedule.deleteShift(shift.id);
-      $scope.editTarget.currentShift = null;
-    };
-
-    $scope.submitShift = function () {
-      let current = $scope.editTarget.currentShift;
-      let shift = current && schedule.shifts[current.id];
-      if (!shift) { return; }
-      shift.setStartTime(current.startTime);
-      shift.setEndTime(current.endTime);
-      console.log('still here', shift);
-      $scope.editTarget.currentShift = null;
     };
   }
 ]);

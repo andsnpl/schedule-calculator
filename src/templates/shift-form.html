@@ -1,0 +1,23 @@
+<form ng-if="editTarget.currentShift" name="editShift" class="editshift">
+  <label for="editing_startTime" class="material-label">
+    <input type="time" name="startTime" id="editing_startTime"
+           class="material-input" ng-model="editTarget.currentShift.startTime">
+    start time
+  </label>
+  <label for="editing_endTime" class="material-label">
+    <input type="time" name="endTime" id="editing_endTime"
+           class="material-input" ng-model="editTarget.currentShift.endTime">
+    end time
+  </label>
+
+  <input type="button" value="&minus;" alt="Delete"
+         class="button round-button giant-button delete-button"
+         ng-click="$event.preventDefault();
+           deleteShift(editTarget.currentShift)">
+  <input type="button" value="&times;" alt="Cancel"
+         class="button round-button giant-button close-button"
+         ng-click="closeShift()">
+  <input type="button" value="&check;" alt="Save"
+         class="button round-button giant-button save-button"
+         ng-click="editShift.$valid && submitShift()">
+</form>
