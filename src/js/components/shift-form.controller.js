@@ -1,5 +1,4 @@
 import angular from 'angular';
-import './get-set-wrapper.service';
 
 let app = angular.module('scheduleCalculator');
 
@@ -8,6 +7,15 @@ app.factory('navigateToShiftForm', [
   function ($location) {
     return function (id) {
       $location.path(`/schedule/shift/${id}`);
+    };
+  }
+]);
+
+app.factory('shiftEditTarget', [
+  function () {
+    return {
+      currentShift: null,
+      selectedEmployee: null
     };
   }
 ]);

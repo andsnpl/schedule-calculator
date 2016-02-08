@@ -5,7 +5,7 @@ let createId = (function () {
   };
 }());
 
-let isInputTime = function (time) {
+let isCompatibleTime = function (time) {
   if (!(time instanceof Date)) { return false; }
   let year = time.getFullYear();
   let month = time.getMonth();
@@ -34,10 +34,10 @@ let validateShift = function (shift) {
   return typeof shift.id === 'number' && shift.id % 1 === 0
          // must have valid employeeId
       && typeof shift.employee.id === 'number' && shift.employee.id % 1 === 0
-         // must have numeric startTime (>= 0, < 24)
-      && isInputTime(shift.startTime)
-         // must have numeric length (> 0, <= 24)
-      && isInputTime(shift.endTime)
+         // must have start and end times on the same date, compatible with
+         // angular's inputs
+      && isCompatibleTime(shift.startTime)
+      && isCompatibleTime(shift.endTime)
          // startTime must be < endTime
       && shift.startTime < shift.endTime;
 };

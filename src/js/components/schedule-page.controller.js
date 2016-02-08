@@ -1,5 +1,4 @@
 import angular from 'angular';
-import './get-set-wrapper.service';
 
 let app = angular.module('scheduleCalculator');
 
