@@ -9,7 +9,6 @@ import employeePageTemplate from '../../templates/employee-page.html';
 
 // custom directives
 import './schedule.directive';
-import './slider.directive';
 
 let app = angular.module('scheduleCalculator');
 

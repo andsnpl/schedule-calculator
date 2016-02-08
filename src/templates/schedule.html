@@ -3,9 +3,9 @@
     <ul class="shifts">
       <li class="shift" ng-repeat="shift in shifts"
           ng-style="{
-            'left': (shift.startTime - schedule.openTime)
+            'left': shift.startOffset(schedule.openTime)
                       * pctOfDayPerHour + '%',
-            'width': shift.length * pctOfDayPerHour + '%'
+            'width': shift.length() * pctOfDayPerHour + '%'
           }">
         <label class="shift-entity" for="shift-checkbox-{{ shift.id }}"
                ng-class="{

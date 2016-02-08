@@ -29,14 +29,14 @@
 
 <form ng-if="editTarget.currentShift" name="editShift" class="editshift">
   <label for="editing_startTime" class="material-label">
-    <input type="number" name="startTime" id="editing_startTime"
+    <input type="time" name="startTime" id="editing_startTime"
            class="material-input" ng-model="editTarget.currentShift.startTime">
     start time
   </label>
-  <label for="editing_startTime" class="material-label">
-    <input type="number" name="length" id="editing_length"
-           class="material-input" ng-model="editTarget.currentShift.length">
-    length
+  <label for="editing_endTime" class="material-label">
+    <input type="time" name="endTime" id="editing_endTime"
+           class="material-input" ng-model="editTarget.currentShift.endTime">
+    end time
   </label>
   <pre>{{ editTarget | json }}</pre>
 

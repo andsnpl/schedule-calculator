@@ -25,8 +25,8 @@ app.directive('schedule', function () {
       scope.$watchGroup(
         ['schedule.openTime', 'schedule.closeTime'],
         function (newValues) {
-          let first = Math.floor(newValues[0]);
-          let last = Math.ceil(newValues[1]);
+          let first = newValues[0].getHours();
+          let last = newValues[1].getHours();
           let hours = [];
           for (var i = first; i < last; i++) {
             let d = new Date();
@@ -49,7 +49,7 @@ app.directive('schedule', function () {
           scope.editTarget.currentShift = {
             id: id,
             startTime: shift.startTime,
-            length: shift.length
+            endTime: shift.endTime
           };
         }
       });

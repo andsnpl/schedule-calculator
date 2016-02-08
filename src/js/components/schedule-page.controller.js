@@ -50,7 +50,7 @@ app.controller('SchedulePageCtrl', [
       let shift = current && schedule.shifts[current.id];
       if (!shift) { return; }
       shift.setStartTime(current.startTime);
-      shift.setLength(current.length);
+      shift.setEndTime(current.endTime);
       console.log('still here', shift);
       $scope.editTarget.currentShift = null;
     };
