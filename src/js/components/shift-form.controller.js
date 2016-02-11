@@ -21,22 +21,37 @@ app.factory('shiftEditTarget', [
 ]);
 
 app.controller('ShiftFormCtrl', [
-  '$scope', '$location', '$routeParams', 'schedule', 'shiftEditTarget',
-  function ($scope, $location, $routeParams, schedule, shiftEditTarget) {
+  '$scope', '$location', '$routeParams', 'schedules', 'shiftEditTarget',
+  function ($scope, $location, $routeParams, schedules, shiftEditTarget) {
+    let schedule = schedules.current();
+    $scope.editTarget = shiftEditTarget;
 
     let closeForm = function () {
       $scope.editTarget.currentShift = null;
-      $location.path('/schedule');
+      $location.path(`/schedule/${schedule.id}`);
     };
     let shift = schedule.shifts[$routeParams.id];
     if (!shift) { closeForm(); }
 
-    $scope.editTarget = shiftEditTarget;
     $scope.editTarget.currentShift = {
       id: shift.id,
       startTime: shift.startTime,
       endTime: shift.endTime
     };
+
+    let startingLength = (shift.endTime - shift.startTime) / 1000 / 60 / 60;
+    let startingHours = schedules.total(shift.employee.id) - startingLength;
+    $scope.$watchGroup(
+      ['editTarget.currentShift.startTime', 'editTarget.currentShift.endTime'],
+      function () {
+        let current = $scope.editTarget.currentShift;
+        if (!current) { return; }
+        let lengthMs = current.endTime - current.startTime;
+        let length = lengthMs / 1000 / 60 / 60;
+        $scope.length = length;
+        $scope.hoursWorked = startingHours  + length;
+      }
+    );
 
     $scope.closeShift = closeForm;
 

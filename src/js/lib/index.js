@@ -22,9 +22,10 @@ app.factory('employeeList', function () {
   return employeeList;
 });
 
-app.factory('schedule', function () {
+app.factory('schedules', function () {
   // TODO: delete this dummy data
-  let schedule = new Schedule();
+  let schedule = new Schedule(Date.now());
+  let schedule2 = new Schedule(new Date(1970, 11, 12));
   schedule._dummy = schedule.addShift({
     id: 99,
     name: 'Zane',
@@ -33,27 +34,75 @@ app.factory('schedule', function () {
   });
   schedule.addShift({
     id: 98,
-    name: 'Zane',
+    name: 'George',
     role: 'test',
     payRate: 10
   });
   schedule.addShift({
     id: 97,
-    name: 'Zane',
+    name: 'Harriet',
     role: 'test',
     payRate: 10
   });
-  schedule.addShift({
+  schedule2.addShift({
     id: 96,
-    name: 'Zane',
+    name: 'Indra',
     role: 'test',
     payRate: 10
   });
-  schedule.addShift({
+  schedule2.addShift({
     id: 95,
-    name: 'Zane',
+    name: 'Jim',
     role: 'test',
     payRate: 10
   });
-  return schedule;
+  let schedules = {
+    [schedule.id]: schedule,
+    [schedule2.id]: schedule2
+  };
+  return {
+    current: function () { return schedule; },
+    add: function (date) {
+      schedule = new Schedule(date);
+      schedules[schedule.id] = schedule;
+      return schedule;
+    },
+    get: function (id) {
+      let sched = schedules[id];
+      schedule = sched;
+      return sched;
+    },
+    list: function () {
+      return Object.keys(schedules)
+        .map(key => schedules[key])
+        .sort(function (a, b) { return a.date - b.date; });
+    },
+    shifts: function (employeeId) {
+      return this.list()
+        .reduce(function (shifts, sched) {
+          return shifts.concat(sched.listShifts());
+        }, [])
+        .filter(sched => sched.employee.id === employeeId);
+    },
+    // total number of hours worked by the employee
+    total: function (employeeId) {
+      let shifts = this.shifts(employeeId);
+      let totalMs = shifts.reduce(function (total, shift) {
+        return total + (shift.endTime - shift.startTime);
+      }, 0);
+      return totalMs / 1000 / 60 / 60;
+    },
+    nextDate: function () {
+      let schedules = this.list();
+      let latest = schedules[schedules.length - 1];
+      let d;
+      if (latest) {
+        d = new Date(latest.date);
+        d.setDate(d.getDate() + 1);
+      } else {
+        d = new Date();
+      }
+      return d;
+    }
+  };
 });

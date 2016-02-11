@@ -88,10 +88,11 @@ export class Shift {
 }
 
 export class Schedule {
-  constructor () {
+  constructor (date) {
     this.openTime = new Date(1970, 0, 1, 0, 0, 0, 0);
     this.closeTime = new Date(1970, 0, 1, 23, 59, 0, 0);
-    this.weekday = 1;
+    this.date = date;
+    this.id = createId();
     this.shifts = {};
   }
   setOpenTime(time) {

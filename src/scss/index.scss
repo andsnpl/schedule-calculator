@@ -117,6 +117,11 @@ body {
 .button {
   width: 1.25em;
   height: 1.25em;
+  text-align: center;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  text-decoration: none;
+  box-shadow: 0 0.2em 0.4em -0.1em rgba(0, 0, 0, 0.75);
 }
 
 .round-button {
@@ -124,8 +129,13 @@ body {
   border-radius: 50%;
   font-size: 1.2rem;
   font-weight: 400;
-  line-height: 0;
   padding: 0 0 0.15em 0;
+}
+
+.large-button {
+  font-size: 1.5rem;
+  width: 2rem;
+  height: 2rem;
 }
 
 .giant-button {
@@ -363,22 +373,19 @@ body {
   text-overflow: ellipsis;
 }
 
-.employee-role {
-  font-size: $secondarytextsize;
-  font-style: italic;
-}
-
-.employee-rate {
-  font-size: $secondarytextsize;
-}
-
-.employee-role + .employee-rate {
-  margin-top: 0.5rem;
-}
-
+.employee-role,
+.employee-rate,
 .employee-scheduled {
   font-size: $secondarytextsize;
+}
+
+.employee-role {
   font-style: italic;
+}
+
+.employee-role + .employee-rate,
+.employee-rate + .employee-scheduled {
+  margin-top: 0.35rem;
 }
 
 .slider {
@@ -398,17 +405,22 @@ body {
   }
 }
 
-.employee-list {
+.fullscreen-list {
   list-style: none;
   padding: 0 0 7rem 0;
   margin: 0;
-}
 
-.employee {
-  font-size: 1.1rem;
-  color: $denim;
-  border-top: 1px solid $lightdenim;
-  padding: 1rem;
+  li {
+    font-size: 1.1rem;
+    color: $denim;
+    border-top: 1px solid $lightdenim;
+    padding: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit
+  }
 }
 
 .addemployee,
@@ -464,6 +476,20 @@ body {
   color: $teal;
 }
 
+.feedback {
+  margin-top: 2rem;
+  border-spacing: 1rem 0.5rem;
+}
+
+.feedback-label {
+  color: $teal;
+  text-align: right;
+}
+
+.feedback-value {
+  font-size: $importanttextsize;
+}
+
 .material-input {
   position: absolute;
   left: 0;
@@ -478,4 +504,11 @@ body {
 
 .active-employee {
   background-color: $redorange;
+}
+
+.schedule-exit-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
 }

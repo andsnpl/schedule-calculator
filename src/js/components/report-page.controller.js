@@ -3,8 +3,8 @@ import angular from 'angular';
 let app = angular.module('scheduleCalculator');
 
 app.controller('ReportPageCtrl', [
-  '$scope', 'schedule',
-  function ($scope, schedule) {
-    $scope.schedule = schedule;
+  '$scope', 'schedules',
+  function ($scope, schedules) {
+    $scope.schedule = schedules.current();
   }
 ]);

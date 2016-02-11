@@ -22,7 +22,15 @@
         <div class="employee-name">{{ employee.name }}</div>
         <div class="employee-role">{{ employee.role }}</div>
         <div class="employee-rate">${{ employee.payRate | number:2 }}/hour</div>
+        <div class="employee-scheduled">
+          Scheduled: {{ hoursWorked[$index] | number }}
+        </div>
       </label>
     </div>
   </form>
 </div>
+
+<a href="#/schedule-list"
+   class="button round-button large-button close-button schedule-exit-button">
+    &times;
+</a>

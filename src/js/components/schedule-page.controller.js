@@ -3,12 +3,14 @@ import angular from 'angular';
 let app = angular.module('scheduleCalculator');
 
 app.controller('SchedulePageCtrl', [
-  '$scope', 'schedule', 'employeeList',
+  '$scope', '$routeParams', 'schedules', 'employeeList',
   'shiftEditTarget', 'navigateToShiftForm',
   function (
-    $scope, schedule, employeeList, shiftEditTarget, navigateToShiftForm
+    $scope, $routeParams, schedules, employeeList,
+    shiftEditTarget, navigateToShiftForm
   ) {
-    $scope.schedule = schedule;
+    let scheduleId = $routeParams.id;
+    $scope.schedule = schedules.get(scheduleId);
     $scope.employees = employeeList;
 
     $scope.editTarget = shiftEditTarget;
@@ -23,12 +25,15 @@ app.controller('SchedulePageCtrl', [
 
     $scope.$watchCollection('schedule.shifts', function () {
       $scope.availableEmployees = availableEmployees();
+      $scope.hoursWorked = $scope.availableEmployees.map(function (employee) {
+        return schedules.total(employee.id);
+      });
     });
 
     $scope.selectEmployee = function (emp) {
       let selected = $scope.editTarget.selectedEmployee;
       if (selected && (selected === emp.id)) {
-        let shift = schedule.addShift(emp);
+        let shift = $scope.schedule.addShift(emp);
         $scope.editTarget.selectedEmployee = null;
         navigateToShiftForm(shift.id);
       }
