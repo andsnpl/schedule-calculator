@@ -470,13 +470,16 @@ body {
 }
 
 .material-label {
-  border-top: 1px solid $lightdenim;
   display: block;
   position: relative;
   margin: 0.25rem 0.25rem 1rem 0.25rem;
-  height: $importanttextsize * 1.5;
-  text-align: right;
+  line-height: 1.75rem;
   color: $teal;
+}
+
+.material-label.overlay-label {
+  line-height: $importanttextsize * 1.5;
+  text-align: right;
 }
 
 .feedback {
@@ -494,15 +497,19 @@ body {
 }
 
 .material-input {
-  position: absolute;
-  left: 0;
   border: none;
+  border-top: 1px solid $lightdenim;
   font-size: $importanttextsize;
   font-weight: inherit;
   font-family: inherit;
   width: 100%;
   background-color: transparent;
   color: $denim;
+}
+
+.material-label.overlay-label > .material-input {
+  position: absolute;
+  left: 0;
 }
 
 .active-employee {
@@ -514,6 +521,23 @@ body {
   top: 1rem;
   right: 1rem;
   z-index: 100;
+}
+
+.report-container {
+  padding: 1rem;
+}
+
+.material-select {
+  width: 100%;
+  border: none;
+  border-top: 1px solid $lightdenim;
+  padding: 0.1rem 1rem;
+  background-color: transparent;
+  font-family: inherit;
+  font-weight: inherit;
+  color: $denim;
+  border-radius: 0;
+  font-size: $importanttextsize;
 }
 
 .report {
