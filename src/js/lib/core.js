@@ -19,14 +19,9 @@ let isCompatibleTime = function (time) {
 // Adds hours but keeps the year/month/day the same;
 let addHours = function (time, n) {
   time = new Date(time);
-  let year = time.getFullYear();
-  let month = time.getMonth();
-  let day = time.getDate();
-  let hours = time.getHours() + n;
-  time.setHours(hours);
-  time.setFullYear(year);
-  time.setMonth(month);
-  time.setDate(day);
+  time.setHours(
+    (((time.getHours() + n) % 24) + 24) % 24
+  );
   return time;
 };
 
