@@ -139,9 +139,9 @@ body {
 }
 
 .giant-button {
-  font-size: 2.5rem;
-  width: 3.25rem;
-  height: 3.25rem;
+  font-size: 1.8rem;
+  width: 2.5rem;
+  height: 2.5rem;
 }
 
 .delete-button {
@@ -407,8 +407,11 @@ body {
 
 .fullscreen-list {
   list-style: none;
-  padding: 0 0 7rem 0;
+  padding: 0 0 2.5rem 0;
   margin: 0;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: scroll;
 
   li {
     font-size: 1.1rem;
@@ -511,4 +514,24 @@ body {
   top: 1rem;
   right: 1rem;
   z-index: 100;
+}
+
+.report {
+  width: 100%;
+  border-spacing: 0.5rem;
+}
+
+.reported-shift,
+.reported-shift-date {
+  padding: 1.25rem;
+  max-width: 50%;
+}
+
+.reported-shift-date {
+  width: 8rem;
+}
+
+.reported-shift {
+  background-color: $denim;
+  color: white;
 }

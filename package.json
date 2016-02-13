@@ -6,7 +6,7 @@
     "clean": "rm -rf build/",
     "_build": "NODE_ENV=production webpack -p --optimize-dedupe --progress",
     "build": "npm run clean && npm run _build",
-    "start": "NODE_ENV=development webpack-dev-server --inline",
+    "start": "NODE_ENV=development webpack-dev-server --inline & node server/index.js",
     "tdd": "NODE_ENV=testing npm start & webpack --watch & karma start",
     "archive": "npm prune --production"
   },
@@ -67,6 +67,8 @@
   },
   "homepage": "https://github.com/b-paul/schedule-calculator#readme",
   "dependencies": {
-    "file-loader": "^0.8.5"
+    "express": "^4.13.4",
+    "file-loader": "^0.8.5",
+    "pg": "^4.4.4"
   }
 }

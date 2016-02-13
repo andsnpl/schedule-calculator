@@ -1,0 +1,16 @@
+<form name="employeeSelect">
+  <select name="employee" class="material-select"
+          ng-model="selection.employee"
+          ng-options="employee.id as employee.name for employee in employees">
+  </select>
+</form>
+<table class="report">
+  <tbody>
+    <tr ng-repeat="shift in schedules.shifts(selection.employee)">
+      <td class="reported-shift-date">{{ shift.schedule.date | date }}</td>
+      <td class="reported-shift">
+        {{ shift.startTime | time }} to {{ shift.endTime | time }}
+      </td>
+    </tr>
+  </tbody>
+</table>

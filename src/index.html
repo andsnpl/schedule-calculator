@@ -18,6 +18,11 @@
       }">
         <a href="#/employees">Employees</a>
       </li>
+      <li class="tab" ng-class="{
+        'is-active': route.indexOf('/reports') === 0
+      }">
+        <a href="#/reports">Reports</a>
+      </li>
     </ul>
   </nav>
   <ng-view></ng-view>
