@@ -3,63 +3,52 @@ import { EmployeeList, Schedule } from './core';
 
 let app = angular.module('scheduleCalculator');
 
+let employeeList = new EmployeeList();
+let schedules = {};
+
+// TODO: delete this dummy data
+let dummySchedules = [];
+let addDummySchedule = sched =>
+  dummySchedules.push(schedules[sched.id] = sched);
+addDummySchedule(new Schedule(new Date()));
+addDummySchedule(new Schedule(new Date(1970, 11, 12)));
+let dummyEmployees = [
+  employeeList.addEmployee('Vandell', 'test', 10000),
+  employeeList.addEmployee('Wanda', 'test', 10),
+  employeeList.addEmployee('Xavier', 'test', 10),
+  employeeList.addEmployee('Yara', 'test', 10),
+  employeeList.addEmployee('Alex', 'test', 10),
+  employeeList.addEmployee('Brit', 'test', 10),
+  employeeList.addEmployee('Chris', 'test', 10),
+  employeeList.addEmployee('Drew', 'test', 10),
+  employeeList.addEmployee('Evan', 'test', 10),
+  employeeList.addEmployee('Frida', 'test', 10),
+  employeeList.addEmployee('Glen', 'test', 10)
+];
+let dummyShifts = [
+  dummySchedules[0].addShift(dummyEmployees[0]),
+  dummySchedules[0].addShift(dummyEmployees[1]),
+  dummySchedules[1].addShift(dummyEmployees[2]),
+  dummySchedules[1].addShift(dummyEmployees[3]),
+  dummySchedules[1].addShift(dummyEmployees[4])
+];
+
+app.filter('time', [
+  '$locale',
+  function ($locale) {
+    return function (dateObject) {
+      return dateObject.toLocaleString(
+        $locale, { hour: 'numeric', minute: 'numeric' });
+    };
+  }
+]);
+
 app.factory('employeeList', function () {
-  let employeeList = new EmployeeList();
-  // TODO: delete this dummy data
-  employeeList._dummy = [
-    employeeList.addEmployee('Vandell', 'test', 10000),
-    employeeList.addEmployee('Wanda', 'test', 10),
-    employeeList.addEmployee('Xavier', 'test', 10),
-    employeeList.addEmployee('Yara', 'test', 10),
-    employeeList.addEmployee('Alex', 'test', 10),
-    employeeList.addEmployee('Brit', 'test', 10),
-    employeeList.addEmployee('Chris', 'test', 10),
-    employeeList.addEmployee('Drew', 'test', 10),
-    employeeList.addEmployee('Evan', 'test', 10),
-    employeeList.addEmployee('Frida', 'test', 10),
-    employeeList.addEmployee('Glen', 'test', 10)
-  ];
   return employeeList;
 });
 
 app.factory('schedules', function () {
-  // TODO: delete this dummy data
-  let schedule = new Schedule(Date.now());
-  let schedule2 = new Schedule(new Date(1970, 11, 12));
-  schedule._dummy = schedule.addShift({
-    id: 99,
-    name: 'Zane',
-    role: 'test',
-    payRate: 10
-  });
-  schedule.addShift({
-    id: 98,
-    name: 'George',
-    role: 'test',
-    payRate: 10
-  });
-  schedule.addShift({
-    id: 97,
-    name: 'Harriet',
-    role: 'test',
-    payRate: 10
-  });
-  schedule2.addShift({
-    id: 96,
-    name: 'Indra',
-    role: 'test',
-    payRate: 10
-  });
-  schedule2.addShift({
-    id: 95,
-    name: 'Jim',
-    role: 'test',
-    payRate: 10
-  });
-  let schedules = {
-    [schedule.id]: schedule,
-    [schedule2.id]: schedule2
-  };
+  let schedule;
   return {
     current: function () { return schedule; },
     add: function (date) {
@@ -78,11 +67,12 @@ app.factory('schedules', function () {
         .sort(function (a, b) { return a.date - b.date; });
     },
     shifts: function (employeeId) {
-      return this.list()
-        .reduce(function (shifts, sched) {
-          return shifts.concat(sched.listShifts());
-        }, [])
-        .filter(sched => sched.employee.id === employeeId);
+      let list = this.list();
+      let shifts = list.reduce(function (shifts, sched) {
+        return shifts.concat(sched.listShifts());
+      }, []);
+      let matches = shifts.filter(shift => shift.employee.id === employeeId);
+      return matches;
     },
     // total number of hours worked by the employee
     total: function (employeeId) {

@@ -5,6 +5,7 @@ let createId = (function () {
   };
 }());
 
+// Checks if the time is compatible with Angular's time input field
 let isCompatibleTime = function (time) {
   if (!(time instanceof Date)) { return false; }
   let year = time.getFullYear();
@@ -29,28 +30,15 @@ let addHours = function (time, n) {
   return time;
 };
 
-let validateShift = function (shift) {
-         // must have integer id
-  return typeof shift.id === 'number' && shift.id % 1 === 0
-         // must have valid employeeId
-      && typeof shift.employee.id === 'number' && shift.employee.id % 1 === 0
-         // must have start and end times on the same date, compatible with
-         // angular's inputs
-      && isCompatibleTime(shift.startTime)
-      && isCompatibleTime(shift.endTime)
-         // startTime must be < endTime
-      && shift.startTime < shift.endTime;
-};
-
-let validateEmployee = function (emp) {
-         // must have integer id
-  return typeof emp.id === 'number' && emp.id % 1 === 0
-         // must have string name
-      && typeof emp.name === 'string'
-         // must have string role
-      && typeof emp.role === 'string'
-         // must have numeric payRate > 0
-      && typeof emp.payRate === 'number' && emp.payRate > 0;
+// Allows any object with a _validate() method to test altering a prop before
+// committing to the change.
+let _setPossiblyInvalidProp = function (obj, propName, value) {
+  let mock = Object.create(obj);
+  mock[propName] = value;
+  if (!mock._validate) {
+    throw new Error(`Invalid ${propName}`);
+  }
+  obj[propName] = value;
 };
 
 export class Shift {
@@ -59,24 +47,28 @@ export class Shift {
     this.startTime = startTime;
     this.endTime = endTime;
     this.id = createId();
-    if (!validateShift(this)) {
+    if (!this._validate()) {
       throw new Error('Invalid parameters for Shift.');
     }
   }
-  _setPossiblyInvalidProp(propName, value) {
-    let mock = Object.create(this);
-    mock[propName] = value;
-    if (!validateShift(mock)) {
-      throw new Error(`Invalid ${propName}`);
-    }
-    this[propName] = value;
+  _validate() {
+           // must have integer id
+    return typeof this.id === 'number' && this.id % 1 === 0
+           // must have valid employeeId
+        && typeof this.employee.id === 'number' && this.employee.id % 1 === 0
+           // must have start and end times on the same date, compatible with
+           // angular's inputs
+        && isCompatibleTime(this.startTime)
+        && isCompatibleTime(this.endTime)
+           // startTime must be < endTime
+        && this.startTime < this.endTime;
   }
   setStartTime(time) {
-    this._setPossiblyInvalidProp('startTime', time);
+    _setPossiblyInvalidProp(this, 'startTime', time);
     return this;
   }
   setEndTime(time) {
-    this._setPossiblyInvalidProp('endTime', time);
+    _setPossiblyInvalidProp(this, 'endTime', time);
     return this;
   }
   length() {
@@ -115,6 +107,7 @@ export class Schedule {
     let length = 8;
     let endTime = addHours(startTime, length);
     let shiftObj = new Shift(employee, startTime, endTime);
+    shiftObj.schedule = this;
     this.shifts[shiftObj.id] = shiftObj;
     return shiftObj;
   }
@@ -154,28 +147,30 @@ export class Employee {
     this.role = role;
     this.payRate = payRate;
     this.id = createId();
-    if (!validateEmployee(this)) {
+    if (!this._validate()) {
       throw new Error('Invalid parameters for Employee.');
     }
   }
-  _setPossiblyInvalidProp(propName, value) {
-    let mock = Object.create(this);
-    mock[propName] = value;
-    if (!validateEmployee(mock)) {
-      throw new Error(`Invalid ${propName}`);
-    }
-    this[propName] = value;
+  _validate() {
+           // must have integer id
+    return typeof this.id === 'number' && this.id % 1 === 0
+           // must have string name
+        && typeof this.name === 'string'
+           // must have string role
+        && typeof this.role === 'string'
+           // must have numeric payRate > 0
+        && typeof this.payRate === 'number' && this.payRate > 0;
   }
   setName(name) {
-    this._setPossiblyInvalidProp('name', name);
+    _setPossiblyInvalidProp(this, 'name', name);
     return this;
   }
   setRole(role) {
-    this._setPossiblyInvalidProp('role', role);
+    _setPossiblyInvalidProp(this, 'role', role);
     return this;
   }
   setPayRate(rate) {
-    this._setPossiblyInvalidProp('payRate', rate);
+    _setPossiblyInvalidProp(this, 'payRate', rate);
     return this;
   }
 }
