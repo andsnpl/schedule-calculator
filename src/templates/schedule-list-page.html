@@ -1,0 +1,17 @@
+<ul class="fullscreen-list">
+  <li class="schedule-row"
+      ng-repeat="schedule in schedules.list()">
+    <a href="#/schedule/{{ schedule.id }}"
+       ng-if="schedule.id != editTarget.currentSchedule.id">
+      {{ schedule.date | date }}
+    </a>
+    <form action="" ng-if="schedule.id == editTarget.currentSchedule.id">
+      <input type="date" ng-model="editTarget.currentSchedule.date">
+      <input type="button" class="button round-button save-button"
+             ng-click="saveSchedule()" value="&check;">
+    </form>
+  </li>
+</ul>
+<input type="button"
+       class="button round-button giant-button add-button new-employee"
+       ng-click="createSchedule()" value="&plus;">

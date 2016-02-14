@@ -1,39 +1,43 @@
-<div class="schedule">
-  <ul class="shifts">
-    <li class="shift" ng-repeat="shift in shifts"
-        ng-click="activeShift.currentShift = shift"
-        ng-class="{
-          'active-shift': shift === activeShift.currentShift
-        }"
-        ng-style="{
-          'left': (shift.startTime - schedule.openTime)
-                    * pctOfDayPerHour + '%',
-          'width': shift.length * pctOfDayPerHour + '%'
-        }">
-      {{ shift.employee.name }}
-      <button delete-button="shift"></button>
-    </li>
-  </ul>
-  <ol class="gridmarks" ng-class="hoursCountAsClassObject()">
+<div class="schedule" ng-class="hoursCountAsClassObject()">
+  <div class="schedulecontent">
+    <ul class="shifts">
+      <li class="shift" ng-repeat="shift in shifts"
+          ng-style="{
+            'left': shift.startOffset(schedule.openTime)
+                      * pctOfDayPerHour + '%',
+            'width': shift.length() * pctOfDayPerHour + '%'
+          }">
+        <label class="shift-entity" for="shift-checkbox-{{ shift.id }}"
+               ng-class="{
+                 'is-active': shift.id === editTarget.currentShift
+               }">
+          <div class="employee-name">{{ shift.employee.name }}</div>
+          <div class="employee-role">{{ shift.employee.role }}</div>
+          <input type="checkbox" class="shift-checkbox"
+                 id="shift-checkbox-{{ shift.id }}"
+                 ng-model="editTarget.currentShift.id"
+                 ng-true-value="{{ shift.id }}"
+                 ng-false-value="null">
+        </label>
+      </li>
+    </ul>
+  </div>
+  <ol class="gridmarks">
     <li class="gridmarks-col" ng-repeat="hour in hours"
         ng-style="{ 'width': pctOfDayPerHour + '%' }">
-      <span class="gridmarks-header">
-        <span class="gridmarks-label shortlabel">
-          {{ hour | date: 'H' }}
-        </span>
-        <span class="gridmarks-label medlabel">
-          {{ hour | date: 'h a' }}
-        </span>
-        <span class="gridmarks-label longlabel">
-          {{ hour | date: 'h:mm a' }}
-        </span>
+    </li>
+  </ol>
+  <ol class="gridmarks-header">
+    <li class="gridmarks-label" ng-repeat="hour in hours">
+      <span class="shortlabel">
+        {{ hour | date: 'H' }}
+      </span>
+      <span class="medlabel">
+        {{ hour | date: 'h a' }}
+      </span>
+      <span class="longlabel">
+        {{ hour | date: 'h:mm a' }}
       </span>
     </li>
   </ol>
-
-  <!-- content that is as wide as the gridmarks but not absolutely positioned,
-       to force the container to keep the right minimum width -->
-  <div class="widthhack" ng-repeat="hour in hours"
-       ng-style="{ width: pctOfDayPerHour + '%' }">
- </div>
 </div>

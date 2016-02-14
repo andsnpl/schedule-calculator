@@ -1,31 +1,36 @@
-<schedule model="schedule" active-shift="editing"></schedule>
+<schedule model="schedule" edit-target="editTarget"></schedule>
 
-<form name="addShift"
-      ng-submit="addShift.$valid
-        && (editing.currentShift = schedule.addShift(add.emp))">
-  <div class="employeebadge"
-       ng-repeat="employee in availableEmployees">
-    <input required type="radio" class="employeebadge-radio"
-           name="employee" ng-model="add.emp" ng-value="employee"
-           id="employeebadge-radio-{{ employee.id }}">
-    <label for="employeebadge-radio-{{ employee.id }}"
-           class="employeebadge-entity">
-      {{ employee.name }}
-    </label>
-  </div>
-<input type="submit" value="Create">
-</form>
+<div class="tray">
+  <form name="addShift" class="addshift">
+    <div class="employeebadge"
+         ng-repeat="employee in availableEmployees"
+         ng-class="{
+           'is-selected': editTarget.selectedEmployee == employee.id
+         }">
+      <label class="employeebadge-entity"
+             for="employeebadge-checkbox-{{ employee.id }}"
+             ng-mousedown="$event.preventDefault(); selectEmployee(employee)">
+        <input type="checkbox" class="employeebadge-checkbox"
+               name="employee" id="employeebadge-checkbox-{{ employee.id }}"
+               ng-model="editTarget.selectedEmployee"
+               ng-true-value="{{ employee.id }}"
+               ng-false-value="null"
+               ng-blur="editTarget.selectedEmployee = null">
+        <div class="employeebadge-initial">
+          {{ employee.name.substr(0, 1) }}
+        </div>
+        <div class="employee-name">{{ employee.name }}</div>
+        <div class="employee-role">{{ employee.role }}</div>
+        <div class="employee-rate">${{ employee.payRate | number:2 }}/hour</div>
+        <div class="employee-scheduled">
+          Scheduled: {{ hoursWorked[$index] | number }}
+        </div>
+      </label>
+    </div>
+  </form>
+</div>
 
-<form ng-show="editing.currentShift" name="editShift">
-  <slider dim="x" max="24" getter-setter="editing_startTime.getterSetter">
-  </slider>
-  <input type="number" name="startTime" id="editing_startTime"
-         ng-model="editing_startTime.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <slider dim="x" max="24" getter-setter="editing_length.getterSetter">
-  </slider>
-  <input type="number" name="length" id="editing_length"
-         ng-model="editing_length.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input type="button" value="Done" ng-click="editing = null">
-</form>
+<a href="#/schedule-list"
+   class="button round-button large-button close-button schedule-exit-button">
+    &times;
+</a>

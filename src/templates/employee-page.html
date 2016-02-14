@@ -1,25 +1,12 @@
-<ul class="employee-list">
+<ul class="fullscreen-list">
   <li class="employee"
-      ng-repeat="employee in employees.listEmployees() | orderBy:'':true"
-      ng-click="editing.currentEmployee = employee"
-      ng-class="{
-        'active-employee': employee === editing.currentEmployee
-      }">
-    {{ employee.name }}
-    <button delete-button="employee"></button>
+      ng-repeat="employee in employees"
+      ng-click="editEmployee(employee.id)">
+    <a href="#/employees/emp/{{ employee.id }}">
+      {{ employee.name }}
+    </a>
   </li>
 </ul>
-
-<form class="addemployee" name="addEmployee"
-      ng-submit="addEmployee.$valid && submit()">
-  <input required class="addemployee-input" type="text"
-         name="name" ng-model="editing_name.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input class="addemployee-input" type="text"
-         name="role" ng-model="editing_role.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input class="addemployee-input" type="text"
-         name="payRate" ng-model="editing_payRate.getterSetter"
-         ng-model-options="{ getterSetter: true }">
-  <input type="submit" value="Save">
-</form>
+<input type="button"
+       class="button round-button giant-button add-button new-employee"
+       ng-click="editEmployee('new')" value="&plus;">

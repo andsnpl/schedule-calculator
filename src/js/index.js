@@ -1,3 +1,5 @@
-import '../scss/index.scss';
+import './schedule-calculator';
+import './lib';
+import './components';
 
-import './components/routes';
+import '../scss/index.scss';

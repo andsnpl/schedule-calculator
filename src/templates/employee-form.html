@@ -1,0 +1,28 @@
+<form class="addemployee" name="addEmployee" ng-if="editTarget.currentEmployee">
+  <label class="material-label overlay-label">
+    <input required class="material-input" type="text"
+           name="name" ng-model="editTarget.currentEmployee.name">
+    name
+  </label>
+  <label class="material-label overlay-label">
+    <input class="material-input" type="text"
+           name="role" ng-model="editTarget.currentEmployee.role">
+    role
+  </label>
+  <label class="material-label overlay-label">
+    <input class="material-input" type="number"
+           name="payRate" ng-model="editTarget.currentEmployee.payRate">
+    pay rate
+  </label>
+
+  <input type="button" value="&minus;" alt="Delete"
+         class="button round-button giant-button delete-button"
+         ng-click="$event.preventDefault();
+           deleteEmployee(editTarget.currentEmployee)">
+  <input type="button" value="&times;" alt="Cancel"
+         class="button round-button giant-button close-button"
+         ng-click="closeEmployee()">
+  <input type="button" value="&check;" alt="Save"
+         class="button round-button giant-button save-button"
+         ng-click="addEmployee.$valid && submitEmployee()">
+</form>
