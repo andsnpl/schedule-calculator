@@ -11,8 +11,8 @@
                ng-class="{
                  'is-active': shift.id === editTarget.currentShift
                }">
-          <div class="employee-name">{{ shift.employee.name }}</div>
-          <div class="employee-role">{{ shift.employee.role }}</div>
+          <div class="employee-name">{{ employees[$index].name }}</div>
+          <div class="employee-role">{{ employees[$index].role }}</div>
           <input type="checkbox" class="shift-checkbox"
                  id="shift-checkbox-{{ shift.id }}"
                  ng-model="editTarget.currentShift.id"

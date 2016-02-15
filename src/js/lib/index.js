@@ -1,37 +1,98 @@
 import angular from 'angular';
 import { EmployeeList, Schedule } from './core';
+import { mapCollection } from './utils';
 
 let app = angular.module('scheduleCalculator');
 
-let employeeList = new EmployeeList();
-let schedules = {};
+let data;
 
-// TODO: delete this dummy data
-let dummySchedules = [];
-let addDummySchedule = sched =>
-  dummySchedules.push(schedules[sched.id] = sched);
-addDummySchedule(new Schedule(new Date()));
-addDummySchedule(new Schedule(new Date(1970, 11, 12)));
-let dummyEmployees = [
-  employeeList.addEmployee('Vandell', 'test', 10000),
-  employeeList.addEmployee('Wanda', 'test', 10),
-  employeeList.addEmployee('Xavier', 'test', 10),
-  employeeList.addEmployee('Yara', 'test', 10),
-  employeeList.addEmployee('Alex', 'test', 10),
-  employeeList.addEmployee('Brit', 'test', 10),
-  employeeList.addEmployee('Chris', 'test', 10),
-  employeeList.addEmployee('Drew', 'test', 10),
-  employeeList.addEmployee('Evan', 'test', 10),
-  employeeList.addEmployee('Frida', 'test', 10),
-  employeeList.addEmployee('Glen', 'test', 10)
-];
-let dummyShifts = [
-  dummySchedules[0].addShift(dummyEmployees[0]),
-  dummySchedules[0].addShift(dummyEmployees[1]),
-  dummySchedules[1].addShift(dummyEmployees[2]),
-  dummySchedules[1].addShift(dummyEmployees[3]),
-  dummySchedules[1].addShift(dummyEmployees[4])
-];
+let saveEmployeeList = function () {
+  let elist = JSON.stringify(data.employeeList._save());
+  localStorage.setItem('employeeList', elist);
+};
+
+let clearSchedule = function (id) {
+  localStorage.removeItem(`schedules/${id}`);
+  delete data.schedules[id];
+};
+
+let saveSchedule = function (id) {
+  if (!(id in data.schedules)) { return; } // Should this throw?
+  data.schedules[id]._isSaved = true;
+  let sched = JSON.stringify(data.schedules[id]._save());
+  localStorage.setItem(`schedules/${id}`, sched);
+};
+
+let clearSchedules = function () {
+  let elist = localStorage.getItem('employeeList');
+  localStorage.clear();
+  data.schedules = {};
+  localStorage.setItem('employeeList', elist);
+};
+
+let saveSchedules = function () {
+  Object.keys(data.schedules).map(saveSchedule);
+};
+
+let loadData = function () {
+  let data = {
+    employeeList: null,
+    schedules: {}
+  };
+
+  // load employee list
+  let elist = localStorage.getItem('employeeList');
+  if (elist !== null) {
+    data.employeeList = elist = EmployeeList._restore(JSON.parse(elist));
+  } else {
+    data.employeeList = elist = new EmployeeList();
+    // TODO: delete this dummy data
+    let dummyEmployees = [
+      elist.addEmployee('Vandell', 'test', 10000),
+      elist.addEmployee('Wanda', 'test', 10),
+      elist.addEmployee('Xavier', 'test', 10),
+      elist.addEmployee('Yara', 'test', 10),
+      elist.addEmployee('Alex', 'test', 10),
+      elist.addEmployee('Brit', 'test', 10),
+      elist.addEmployee('Chris', 'test', 10),
+      elist.addEmployee('Drew', 'test', 10),
+      elist.addEmployee('Evan', 'test', 10),
+      elist.addEmployee('Frida', 'test', 10),
+      elist.addEmployee('Glen', 'test', 10)
+    ];
+
+    let dummySchedules = [];
+    let addDummySchedule = sched =>
+      dummySchedules.push(data.schedules[sched.id] = sched);
+    addDummySchedule(new Schedule(new Date()));
+    addDummySchedule(new Schedule(new Date(1970, 11, 12)));
+
+    let dummyShifts = [
+      dummySchedules[0].addShift(dummyEmployees[0].id),
+      dummySchedules[0].addShift(dummyEmployees[1].id),
+      dummySchedules[1].addShift(dummyEmployees[2].id),
+      dummySchedules[1].addShift(dummyEmployees[3].id),
+      dummySchedules[1].addShift(dummyEmployees[4].id)
+    ];
+  }
+
+  data.employeeList.onChange(saveEmployeeList);
+
+  // load schedules
+  let len = localStorage.length;
+  for (let i = 0; i < len; i++) {
+    let key = localStorage.key(i);
+    let sched = localStorage.getItem(key);
+    sched = Schedule._restore(JSON.parse(sched));
+    if (sched.id === elist.id) { continue; }
+    sched._isSaved = true;
+    data.schedules[sched.id] = sched;
+  }
+
+  return data;
+};
+
+data = loadData();
 
 app.filter('time', [
   '$locale',
@@ -44,10 +105,11 @@ app.filter('time', [
 ]);
 
 app.factory('employeeList', function () {
-  return employeeList;
+  return data.employeeList;
 });
 
 app.factory('schedules', function () {
+  let schedules = data.schedules;
   let schedule;
   return {
     current: function () { return schedule; },
@@ -56,6 +118,8 @@ app.factory('schedules', function () {
       schedules[schedule.id] = schedule;
       return schedule;
     },
+    clear: clearSchedule,
+    save: saveSchedule,
     get: function (id) {
       let sched = schedules[id];
       schedule = sched;
@@ -71,7 +135,7 @@ app.factory('schedules', function () {
       let shifts = list.reduce(function (shifts, sched) {
         return shifts.concat(sched.listShifts());
       }, []);
-      let matches = shifts.filter(shift => shift.employee.id === employeeId);
+      let matches = shifts.filter(shift => shift.employeeId === employeeId);
       return matches;
     },
     // total number of hours worked by the employee

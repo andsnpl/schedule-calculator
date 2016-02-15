@@ -18,7 +18,7 @@ app.controller('SchedulePageCtrl', [
 
     let availableEmployees = function () {
       let isAvailable = function (employee) {
-        return !$scope.schedule.isEmployeeWorking(employee);
+        return !$scope.schedule.isEmployeeWorking(employee.id);
       };
       return $scope.employees.listEmployees().filter(isAvailable);
     };
@@ -33,9 +33,19 @@ app.controller('SchedulePageCtrl', [
     $scope.selectEmployee = function (emp) {
       let selected = $scope.editTarget.selectedEmployee;
       if (selected && (selected === emp.id)) {
-        let shift = $scope.schedule.addShift(emp);
+        let shift = $scope.schedule.addShift(selected);
         $scope.editTarget.selectedEmployee = null;
         navigateToShiftForm(shift.id);
+      }
+    };
+
+    $scope.save = function () {
+      schedules.save(scheduleId);
+    };
+
+    $scope.close = function () {
+      if (!$scope.schedule._isSaved) {
+        schedules.clear(scheduleId);
       }
     };
   }

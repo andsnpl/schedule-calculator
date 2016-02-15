@@ -159,7 +159,6 @@ body {
   background-color: $denim;
   color: white;
   font-weight: 300;
-  zoom: 0.9;
   padding-bottom: 0;
 }
 
@@ -516,11 +515,16 @@ body {
   background-color: $redorange;
 }
 
-.schedule-exit-button {
+.schedule-exit-button,
+.schedule-save-button {
   position: fixed;
   top: 1rem;
   right: 1rem;
   z-index: 100;
+}
+
+.schedule-save-button {
+  top: 4rem;
 }
 
 .report-container {
@@ -558,4 +562,10 @@ body {
 .reported-shift {
   background-color: $denim;
   color: white;
+}
+
+.schedule-row input {
+  font-size: inherit;
+  font-family: inherit;
+  font-weight: inherit;
 }

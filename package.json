@@ -67,6 +67,7 @@
   },
   "homepage": "https://github.com/b-paul/schedule-calculator#readme",
   "dependencies": {
+    "cors": "^2.7.1",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
     "pg": "^4.4.4"
