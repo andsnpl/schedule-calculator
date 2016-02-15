@@ -1,13 +1,32 @@
+var fs = require('fs');
+var path = require('path');
+var https = require('https');
 var express = require('express');
 var bodyParser = require('body-parser');
+var cors = require('cors');
 var pg = require('pg');
+
+var keyLocation = path.resolve(__dirname, '../private/server.key');
+var certLocation = path.resolve(__dirname, '../private/server.crt');
+var credentials = {
+  key: fs.readFileSync(keyLocation, 'utf-8').trim(),
+  cert: fs.readFileSync(certLocation, 'utf-8').trim()
+};
+
+var dbPassLocation = path.resolve(__dirname, '../private/database.pass');
+var dbPassword = fs.readFileSync(dbPassLocation, 'utf-8').trim();
+var conString
+  = `postgres://schedule_calculator:${dbPassword}`
+  + '@localhost/schedule_calculator';
 
 var app = express();
 app.use(bodyParser.json());
-
-var conString
-  = 'postgres://schedule_calculator:Enjoy-Dare-Motor-Screen-2'
-  + '@localhost/schedule_calculator';
+app.use(cors({
+  origin: [
+    /https?:\/\/localhost:8080/,
+    /https?:\/\/127\.0\.0\.1:8080/
+  ]
+}));
 
 var send400 = function (res, message, details) {
   console.error('Returning 400', details);
@@ -15,6 +34,8 @@ var send400 = function (res, message, details) {
 };
 
 var sendNotification = function (subscription, message) {
+  console.log(subscription);
+  console.log(message);
 };
 
 app.post('/subscribe', function (req, res) {
@@ -44,7 +65,7 @@ app.post('/subscribe', function (req, res) {
 
 app.post('/schedule', function (req, res) {
   console.log('received schedule', req.body);
-  var scheduleId = req.body.scheduleId;
+  var scheduleId = req.body.id;
   var data = JSON.stringify(req.body.data);
 
   pg.connect(conString, function(err, client, done) {
@@ -55,7 +76,7 @@ app.post('/schedule', function (req, res) {
     // save the schedule to the database
     var savedSchedule = new Promise(function (resolve, reject) {
       client.query(
-        'DELETE FROM schedules WHERE id = $',
+        'DELETE FROM schedules WHERE id = $1',
         [scheduleId],
         function (err, result) {
           client.query(
@@ -91,7 +112,7 @@ app.post('/schedule', function (req, res) {
                 subscription, 'new data for schedule ' + scheduleId);
             });
           })
-          .fail(function () {
+          .catch(function () {
             done();
           });
       });
@@ -101,7 +122,7 @@ app.post('/schedule', function (req, res) {
 app.get('/schedule/:id', function (req, res) {
   console.log('getting schedule for', req.params.id);
   // get the schedule as JSON
-  var scheduleId = req.body.scheduleId;
+  var scheduleId = req.params.id;
 
   pg.connect(conString, function (err, client, done) {
     if (err) {
@@ -126,4 +147,4 @@ app.get('/schedule/:id', function (req, res) {
   });
 });
 
-app.listen(8081);
+https.createServer(credentials, app).listen(8081);

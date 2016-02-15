@@ -83,8 +83,9 @@ let loadData = function () {
   for (let i = 0; i < len; i++) {
     let key = localStorage.key(i);
     let sched = localStorage.getItem(key);
-    sched = Schedule._restore(JSON.parse(sched));
+    sched = JSON.parse(sched);
     if (sched.id === elist.id) { continue; }
+    sched = Schedule._restore(sched);
     sched._isSaved = true;
     data.schedules[sched.id] = sched;
   }
@@ -104,59 +105,71 @@ app.filter('time', [
   }
 ]);
 
-app.factory('employeeList', function () {
-  return data.employeeList;
-});
+app.factory('employeeList', [
+  function () {
+    return data.employeeList;
+  }
+]);
 
-app.factory('schedules', function () {
-  let schedules = data.schedules;
-  let schedule;
-  return {
-    current: function () { return schedule; },
-    add: function (date) {
-      schedule = new Schedule(date);
-      schedules[schedule.id] = schedule;
-      return schedule;
-    },
-    clear: clearSchedule,
-    save: saveSchedule,
-    get: function (id) {
-      let sched = schedules[id];
-      schedule = sched;
-      return sched;
-    },
-    list: function () {
-      return Object.keys(schedules)
-        .map(key => schedules[key])
-        .sort(function (a, b) { return a.date - b.date; });
-    },
-    shifts: function (employeeId) {
-      let list = this.list();
-      let shifts = list.reduce(function (shifts, sched) {
-        return shifts.concat(sched.listShifts());
-      }, []);
-      let matches = shifts.filter(shift => shift.employeeId === employeeId);
-      return matches;
-    },
-    // total number of hours worked by the employee
-    total: function (employeeId) {
-      let shifts = this.shifts(employeeId);
-      let totalMs = shifts.reduce(function (total, shift) {
-        return total + (shift.endTime - shift.startTime);
-      }, 0);
-      return totalMs / 1000 / 60 / 60;
-    },
-    nextDate: function () {
-      let schedules = this.list();
-      let latest = schedules[schedules.length - 1];
-      let d;
-      if (latest) {
-        d = new Date(latest.date);
-        d.setDate(d.getDate() + 1);
-      } else {
-        d = new Date();
+app.factory('schedules', [
+  '$http',
+  function ($http) {
+    let schedules = data.schedules;
+    let schedule;
+    return {
+      current: function () { return schedule; },
+      add: function (date) {
+        schedule = new Schedule(date);
+        schedules[schedule.id] = schedule;
+        return schedule;
+      },
+      clear: clearSchedule,
+      save: function (id) {
+        saveSchedule(id);
+        let data = JSON.stringify({
+          id,
+          data: this.get(id)._save()
+        });
+        return $http.post('https://localhost:8081/schedule', data);
+      },
+      get: function (id) {
+        let sched = schedules[id];
+        schedule = sched;
+        return sched;
+      },
+      list: function () {
+        return Object.keys(schedules)
+          .map(key => schedules[key])
+          .sort(function (a, b) { return a.date - b.date; });
+      },
+      shifts: function (employeeId) {
+        let list = this.list();
+        let shifts = list.reduce(function (shifts, sched) {
+          return shifts.concat(sched.listShifts());
+        }, []);
+        let matches = shifts.filter(shift => shift.employeeId === employeeId);
+        return matches;
+      },
+      // total number of hours worked by the employee
+      total: function (employeeId) {
+        let shifts = this.shifts(employeeId);
+        let totalMs = shifts.reduce(function (total, shift) {
+          return total + (shift.endTime - shift.startTime);
+        }, 0);
+        return totalMs / 1000 / 60 / 60;
+      },
+      nextDate: function () {
+        let schedules = this.list();
+        let latest = schedules[schedules.length - 1];
+        let d;
+        if (latest) {
+          d = new Date(latest.date);
+          d.setDate(d.getDate() + 1);
+        } else {
+          d = new Date();
+        }
+        return d;
       }
-      return d;
-    }
-  };
-});
+    };
+  }
+]);

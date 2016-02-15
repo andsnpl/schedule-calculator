@@ -219,7 +219,10 @@ export class EmployeeList {
     let elist = new EmployeeList();
     elist.id = createId._restoreId(contents.id);
     elist.employees = _restoreCollection(contents.employees, Employee);
-    elist.employees.forEach(emp => emp.onChange(() => elist.change()));
+    for (let key of Object.keys(elist.employees)) {
+      let emp = elist.employees[key];
+      emp.onChange(() => elist.change());
+    }
     return elist;
   }
   addEmployee (name, role, payRate) {
