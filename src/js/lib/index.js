@@ -46,34 +46,6 @@ let loadData = function () {
     data.employeeList = elist = EmployeeList._restore(JSON.parse(elist));
   } else {
     data.employeeList = elist = new EmployeeList();
-    // TODO: delete this dummy data
-    let dummyEmployees = [
-      elist.addEmployee('Vandell', 'test', 10000),
-      elist.addEmployee('Wanda', 'test', 10),
-      elist.addEmployee('Xavier', 'test', 10),
-      elist.addEmployee('Yara', 'test', 10),
-      elist.addEmployee('Alex', 'test', 10),
-      elist.addEmployee('Brit', 'test', 10),
-      elist.addEmployee('Chris', 'test', 10),
-      elist.addEmployee('Drew', 'test', 10),
-      elist.addEmployee('Evan', 'test', 10),
-      elist.addEmployee('Frida', 'test', 10),
-      elist.addEmployee('Glen', 'test', 10)
-    ];
-
-    let dummySchedules = [];
-    let addDummySchedule = sched =>
-      dummySchedules.push(data.schedules[sched.id] = sched);
-    addDummySchedule(new Schedule(new Date()));
-    addDummySchedule(new Schedule(new Date(1970, 11, 12)));
-
-    let dummyShifts = [
-      dummySchedules[0].addShift(dummyEmployees[0].id),
-      dummySchedules[0].addShift(dummyEmployees[1].id),
-      dummySchedules[1].addShift(dummyEmployees[2].id),
-      dummySchedules[1].addShift(dummyEmployees[3].id),
-      dummySchedules[1].addShift(dummyEmployees[4].id)
-    ];
   }
 
   data.employeeList.onChange(saveEmployeeList);
