@@ -4,5 +4,7 @@ CREATE TABLE schedules (
 );
 
 CREATE TABLE subscriptions (
-  subscription_id TEXT
+  endpoint TEXT,
+  subscription_id TEXT,
+  UNIQUE (endpoint, subscription_id)
 );

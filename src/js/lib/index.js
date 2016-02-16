@@ -82,10 +82,9 @@ let loadData = function () {
   let len = localStorage.length;
   for (let i = 0; i < len; i++) {
     let key = localStorage.key(i);
+    if (key.indexOf('schedules/') !== 0) { continue; }
     let sched = localStorage.getItem(key);
-    sched = JSON.parse(sched);
-    if (sched.id === elist.id) { continue; }
-    sched = Schedule._restore(sched);
+    sched = Schedule._restore(JSON.parse(sched));
     sched._isSaved = true;
     data.schedules[sched.id] = sched;
   }
@@ -112,8 +111,8 @@ app.factory('employeeList', [
 ]);
 
 app.factory('schedules', [
-  '$http',
-  function ($http) {
+  '$http', 'APISERVER',
+  function ($http, APISERVER) {
     let schedules = data.schedules;
     let schedule;
     return {
@@ -130,7 +129,7 @@ app.factory('schedules', [
           id,
           data: this.get(id)._save()
         });
-        return $http.post('https://localhost:8081/schedule', data);
+        return $http.post(`${APISERVER}/schedule`, data);
       },
       get: function (id) {
         let sched = schedules[id];

@@ -1,6 +1,7 @@
 var fs = require('fs');
 var path = require('path');
 var https = require('https');
+var request = require('request');
 var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
@@ -19,6 +20,9 @@ var conString
   = `postgres://schedule_calculator:${dbPassword}`
   + '@localhost/schedule_calculator';
 
+var apiKeyLocation = path.resolve(__dirname, '../private/api.key');
+var apiKey = fs.readFileSync(apiKeyLocation, 'utf-8').trim();
+
 var app = express();
 app.use(bodyParser.json());
 app.use(cors({
@@ -33,23 +37,44 @@ var send400 = function (res, message, details) {
   res.status(400).send(message);
 };
 
-var sendNotification = function (subscription, message) {
-  console.log(subscription);
+var sendNotification = function (endpoint, subscriptionId, message) {
+  console.log(endpoint, subscriptionId);
   console.log(message);
+  request.post({
+    uri: endpoint,
+    json: true,
+    headers: {
+      Authorization: `key=${apiKey}`
+    },
+    body: {
+      to: subscriptionId
+    }
+  }, function (e, r, b) {
+    console.warn('gcm error =', e);
+    console.log('gcm response =', b);
+  });
 };
 
 app.post('/subscribe', function (req, res) {
   console.log('received subscribe', req.body);
   // save the information necessary to send notifications to the device
-  var subscription = req.body.subscriptionId;
+  var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
+  var endpoint = req.body.endpoint;
+  var subscriptionId;
+
+  if (endpoint.indexOf(GCM_ENDPOINT) === 0) {
+    var endpointParts = endpoint.split('/');
+    subscriptionId = endpointParts.pop();
+    endpoint = GCM_ENDPOINT;
+  }
 
   pg.connect(conString, function(err, client, done) {
     if (err) {
       return send400(res, 'could not connect to database', err);
     }
     client.query(
-      'INSERT INTO subscriptions (subscription_id) VALUES ($1)',
-      [subscription],
+      'INSERT INTO subscriptions (endpoint, subscription_id) VALUES ($1, $2)',
+      [endpoint, subscriptionId],
       function(err, result) {
         // call `done()` to release the client back to the pool
         done();
@@ -97,7 +122,7 @@ app.post('/schedule', function (req, res) {
 
     // notify subscribed devices
     client.query(
-      'SELECT subscription_id FROM subscriptions',
+      'SELECT endpoint, subscription_id FROM subscriptions',
       [],
       function (err, result) {
         savedSchedule // wait for the schedule to be saved
@@ -106,10 +131,12 @@ app.post('/schedule', function (req, res) {
             done();
 
             result.rows.forEach(function (row) {
-              var subscription = row.subscription_id;
+              var endpoint = row.endpoint;
+              var subscriptionId = row.subscription_id;
 
               sendNotification(
-                subscription, 'new data for schedule ' + scheduleId);
+                endpoint, subscriptionId,
+                'new data for schedule ' + scheduleId);
             });
           })
           .catch(function () {

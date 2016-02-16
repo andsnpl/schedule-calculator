@@ -1,0 +1,8 @@
+{
+  "name": "Schedule Calculator",
+  "short_name": "Schedule Calculator",
+  "icons": [],
+  "start_url": "/",
+  "display": "standalone",
+  "gcm_sender_id": "539651733910"
+}

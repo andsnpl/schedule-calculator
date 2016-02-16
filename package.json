@@ -8,6 +8,7 @@
     "build": "npm run clean && npm run _build",
     "start": "NODE_ENV=development webpack-dev-server --inline",
     "serve": "node server/index.js",
+    "serve-dev": "node --debug server/index.js",
     "tdd": "NODE_ENV=testing npm start & webpack --watch & karma start",
     "archive": "npm prune --production"
   },
@@ -71,6 +72,7 @@
     "cors": "^2.7.1",
     "express": "^4.13.4",
     "file-loader": "^0.8.5",
-    "pg": "^4.4.4"
+    "pg": "^4.4.4",
+    "request": "^2.69.0"
   }
 }

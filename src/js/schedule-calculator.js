@@ -6,6 +6,8 @@ let app = angular.module('scheduleCalculator', [
   'ngRoute', 'ngAnimate'
 ]);
 
+app.constant('APISERVER', 'https://localhost:8081');
+
 app.config([
   '$httpProvider',
   function ($httpProvider) {
