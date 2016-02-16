@@ -1,0 +1,25 @@
+@import 'shared';
+
+.report-container {
+  padding: 1rem;
+}
+
+.report {
+  width: 100%;
+  border-spacing: 0.5rem;
+}
+
+.reported-shift,
+.reported-shift-date {
+  padding: 1.25rem;
+  max-width: 50%;
+}
+
+.reported-shift-date {
+  width: 8rem;
+}
+
+.reported-shift {
+  background-color: $denim;
+  color: white;
+}

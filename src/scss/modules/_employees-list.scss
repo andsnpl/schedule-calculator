@@ -1,0 +1,29 @@
+@import 'shared';
+
+.new-employee {
+  position: fixed;
+  bottom: 3rem;
+  right: 1rem;
+}
+
+.addemployee {
+  @include fullscreen-form;
+}
+
+.feedback {
+  margin-top: 2rem;
+  border-spacing: 1rem 0.5rem;
+}
+
+.feedback-label {
+  color: $teal;
+  text-align: right;
+}
+
+.feedback-value {
+  font-size: $importanttextsize;
+}
+
+.active-employee {
+  background-color: $redorange;
+}

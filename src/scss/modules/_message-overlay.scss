@@ -1,0 +1,19 @@
+@import '../vars';
+@import 'shared';
+
+.message-overlay {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  min-height: 6rem;
+  background-color: white;
+  z-index: 1000;
+  padding: 2rem;
+  text-align: center;
+  box-shadow: 0 -0.2rem 0.6rem rgba(0, 0, 0, 0.35);
+
+  input[type=button] {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+}

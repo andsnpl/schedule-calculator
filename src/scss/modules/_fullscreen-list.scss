@@ -1,0 +1,22 @@
+@import 'shared';
+
+.fullscreen-list {
+  list-style: none;
+  padding: 0 0 2.5rem 0;
+  margin: 0;
+  height: 100%;
+  box-sizing: border-box;
+  overflow: scroll;
+
+  li {
+    font-size: 1.1rem;
+    color: $denim;
+    border-top: 1px solid $lightdenim;
+    padding: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit
+  }
+}
