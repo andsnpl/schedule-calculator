@@ -5,8 +5,8 @@ import scheduleTemplate from '../../templates/schedule.html';
 let app = angular.module('scheduleCalculator');
 
 app.directive('schedule', [
-  'navigateToShiftForm',
-  function (navigateToShiftForm) {
+  'navigateToShiftForm', 'employeeList',
+  function (navigateToShiftForm, employeeList) {
     return {
       restrict: 'E',
       replace: true,
@@ -16,12 +16,10 @@ app.directive('schedule', [
         editTarget: '='
       },
       link: function (scope, element, attrs) {
-        scope.shifts = scope.schedule.listShifts();
-        scope.hours = [];
-        scope.pctOfDayPerHour = 100;
-
         scope.$watchCollection('schedule.shifts', function () {
           scope.shifts = scope.schedule.listShifts();
+          scope.employees = scope.shifts
+            .map(shift => employeeList.employees[shift.employeeId]);
         });
 
         scope.$watchGroup(
@@ -57,6 +55,7 @@ app.directive('schedule', [
         // Allows the template to request a class definition used for responsive
         // styling.
         scope.hoursCountAsClassObject = function () {
+          if (!scope.hours) { return {}; }
           return {
             ['hourscount-' + scope.hours.length]: true
           };

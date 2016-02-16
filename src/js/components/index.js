@@ -1,6 +1,8 @@
 import angular from 'angular';
 
 import './nav.controller';
+import './push.controller';
+import './push.service';
 import './schedule-list-page.controller';
 import './schedule-page.controller';
 import './shift-form.controller';

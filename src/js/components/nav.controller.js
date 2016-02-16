@@ -2,7 +2,7 @@ import angular from 'angular';
 
 let app = angular.module('scheduleCalculator');
 
-app.controller('navController', [
+app.controller('navCtrl', [
   '$rootScope',
   function ($rootScope) {
     $rootScope.$on('$routeChangeSuccess', function (evt, route) {
