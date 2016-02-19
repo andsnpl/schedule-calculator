@@ -1,3 +1,83 @@
+@mixin hidden-checkbox {
+  position: absolute;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+
+@mixin fullscreen-form {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem 1.5rem 4.25rem 1.5rem;
+  background-color: white;
+  z-index: 100;
+
+  .button {
+    position: absolute;
+    bottom: 3rem;
+    @include shadow;
+  }
+
+  .delete-button {
+    left: 1rem;
+  }
+
+  .close-button {
+    left: 50%;
+    right: 50%;
+    transform: translateX(-50%);
+  }
+
+  .save-button {
+    right: 1rem;
+  }
+}
+
+.headline {
+  font-weight: inherit;
+  text-align: center;
+  color: $denim;
+}
+
+.flyover {
+  position: relative;
+  margin: 1rem 0;
+}
+
+.flyover-content {
+  display: none;
+  padding: 1rem;
+  width: 110%;
+  position: absolute;
+  left: 0;
+  background-color: white;
+  color: $denim;
+  @include shadow;
+  z-index: 1;
+
+  .flyover-toggle:focus ~ & {
+    display: inline-block;
+  }
+}
+
+.flyover-toggle {
+  @include hidden-checkbox;
+}
+
+.flyover-label::before {
+  content: '\203a';
+  display: inline-block;
+  margin-right: 0.3rem;
+
+  .flyover-toggle:focus + & {
+    transform: rotate(90deg);
+  }
+}
+
 .employee-name,
 .employee-role,
 .employee-rate,
@@ -20,43 +100,4 @@
 .employee-role + .employee-rate,
 .employee-rate + .employee-scheduled {
   margin-top: 0.35rem;
-}
-
-@mixin hidden-checkbox {
-  position: absolute;
-  height: 1px;
-  width: 1px;
-  overflow: hidden;
-  clip: rect(1px, 1px, 1px, 1px);
-}
-
-@mixin fullscreen-form {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
-  padding: 1rem 1.5rem 4.25rem 1.5rem;
-  background-color: white;
-  z-index: 100;
-
-  .button {
-    position: absolute;
-    bottom: 3rem;
-    box-shadow: 0 0.15rem 0.5rem rgba(0, 0, 0, 0.5);
-  }
-
-  .delete-button {
-    left: 1rem;
-  }
-
-  .close-button {
-    left: 50%;
-    right: 50%;
-    transform: translateX(-50%);
-  }
-
-  .save-button {
-    right: 1rem;
-  }
 }

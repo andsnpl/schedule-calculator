@@ -1,5 +1,9 @@
+// Dependencies for other modules. Order is important.
 @import 'vars';
 @import 'ui';
+@import 'modules/shared';
+
+// Order not important
 @import 'modules/tabs';
 @import 'modules/slider';
 @import 'modules/add-shift-tray';
@@ -10,10 +14,12 @@
 @import 'modules/report';
 @import 'modules/message-overlay';
 @import 'modules/employees-list';
+@import 'modules/login-form';
 
 body {
   font-family: "Source Sans Pro", sans-serif;
   font-weight: 300;
+  -webkit-font-smoothing: subpixel-antialiased;
   overflow: hidden;
   position: absolute;
   top: 0;

@@ -32,6 +32,7 @@ app.controller('EmployeeFormCtrl', [
     if ($routeParams.id === 'new') {
       emp = {
         name: '',
+        userId: '',
         role: '',
         payRate: 0.00
       };
@@ -44,6 +45,7 @@ app.controller('EmployeeFormCtrl', [
     $scope.editTarget.currentEmployee = {
       id: emp.id,
       name: emp.name,
+      userId: '',
       role: emp.role,
       payRate: emp.payRate
     };
@@ -63,11 +65,13 @@ app.controller('EmployeeFormCtrl', [
       console.log(emp);
       if ('id' in current && emp) {
         emp.setName(current.name);
+        emp.setUserId(current.userId);
         emp.setRole(current.role);
         emp.setPayRate(current.payRate);
       } else {
         console.log(
-        employeeList.addEmployee(current.name, current.role, current.payRate)
+        employeeList.addEmployee(
+          current.name, current.userId, current.role, current.payRate)
         );
       }
       closeForm();

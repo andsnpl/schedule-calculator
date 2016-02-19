@@ -5,7 +5,7 @@ let app = angular.module('scheduleCalculator');
 app.factory('pushNotifications', [
   '$q', '$http', 'APISERVER',
   function ($q, $http, APISERVER) {
-    let supported = 'serviceWorker' in navigator;
+    let supported = 'serviceWorker' in navigator && 'PushManager' in window;
     let ready;
 
     if (supported) {
@@ -18,35 +18,34 @@ app.factory('pushNotifications', [
           } else if (Notification.permission === 'denied') {
             console.warn('notifications permission is denied.');
             return $q.reject();
-          } else if (!('PushManager' in window)) {
-            console.warn('push messaging not supported.');
-            return $q.reject();
           }
           return navigator.serviceWorker.ready;
         });
     } else {
-      console.warn('service workers not supported.');
+      console.warn('push messaging is not supported.');
       ready = $q.reject();
     }
 
     let requestSubscription = function (serviceWorkerRegistration) {
-      console.log('requesting subscription');
       return serviceWorkerRegistration.pushManager
         .subscribe({ userVisibleOnly: true });
     };
 
-    let addSubscription = function (subscription) {
-      console.log('got subscription, sending to server');
-      return $http.post(`${APISERVER}/subscribe`, JSON.stringify(subscription));
+    let addSubscription = function (userId, subscription) {
+      let data = JSON.stringify({
+        userId,
+        endpoint: subscription.endpoint,
+      });
+      return $http.post(`${APISERVER}/subscribe`, data);
     };
 
     return {
       supported,
       ready,
-      subscribe() {
+      subscribe(userId) {
         return this.ready
           .then(requestSubscription)
-          .then(addSubscription)
+          .then(subscription => addSubscription(userId, subscription))
           .catch(function (err) {
             console.error(err);
           });

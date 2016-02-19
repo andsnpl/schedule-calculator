@@ -153,8 +153,9 @@ export class Schedule {
 }
 
 export class Employee {
-  constructor (name, role, payRate) {
+  constructor (name, userId, role, payRate) {
     this.name = name;
+    this.userId = userId;
     this.role = role;
     this.payRate = payRate;
     this.id = createId();
@@ -188,6 +189,11 @@ export class Employee {
   }
   setName(name) {
     _setPossiblyInvalidProp(this, 'name', name);
+    this.change();
+    return this;
+  }
+  setUserId(userId) {
+    _setPossiblyInvalidProp(this, 'userId', userId);
     this.change();
     return this;
   }

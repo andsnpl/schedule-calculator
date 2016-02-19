@@ -6,6 +6,7 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var cors = require('cors');
 var pg = require('pg');
+var Q = require('q');
 
 var keyLocation = path.resolve(__dirname, '../private/server.key');
 var certLocation = path.resolve(__dirname, '../private/server.crt');
@@ -32,34 +33,109 @@ app.use(cors({
   ]
 }));
 
-var send400 = function (res, message, details) {
-  console.error('Returning 400', details);
-  res.status(400).send(message);
+var connect = function (res, clientFn) {
+  pg.connect(conString, function (err, client, done) {
+    if (err) {
+      return send500(res, 'could not connect to database', err);
+    }
+    clientFn(client, done);
+  });
 };
+
+var runQuery = function (res, query, params, callback) {
+  return connect(res, function (client, done) {
+    client.query(query, params, function (err, result) {
+      done();
+      if (err) {
+        return send500(res, 'query ' + query + ' failed', err);
+      } else if (!result.rows.length) {
+        res.end();
+      } else if (callback) {
+        callback(result.rows);
+      } else {
+        res.end();
+      }
+    });
+  });
+};
+
+var runQuerySingleResult = function (res, query, params, callback) {
+  return runQuery(res, query, params, function (rows) {
+    if (rows.length > 1) {
+      return send500(
+        res, 'query ' + query + ' returned too many results', results);
+    } else if (callback) {
+      callback(res, rows[0]);
+    } else {
+      res.end();
+    }
+  });
+};
+
+var send500 = function (res, message, details) {
+  console.error('Returning 500', details);
+  res.status(500).send(message);
+};
+
+var cleanUpSchedules = function (schedulesToAdd, schedulesToDelete) {
+  connect(res, function (client, done) {
+    try {
+      schedulesToDelete.forEach(function (scheduleId) {
+        client.query(
+          'DELETE FROM schedules WHERE user_id = $1 AND schedule_id = $2',
+          [userId, scheduleId]
+        );
+      });
+
+      receivedSchedules.forEach(function (sched) {
+        if (schedulesToAdd.indexOf(sched.id) + 1) {
+          client.query(
+            'INSERT INTO schedules (user_id, schedule_id, data) '
+            + 'VALUES ($1, $2, $3)',
+            [userId, sched.id, JSON.stringify(sched)]
+          );
+        }
+      });
+    } catch (err) {
+      return send500(res, '', err);
+    } finally {
+      done();
+    }
+  });
+} 
 
 var sendNotification = function (endpoint, subscriptionId, message) {
   console.log(endpoint, subscriptionId);
   console.log(message);
-  request.post({
-    uri: endpoint,
-    json: true,
-    headers: {
-      Authorization: `key=${apiKey}`
-    },
-    body: {
-      to: subscriptionId
-    }
-  }, function (e, r, b) {
-    console.warn('gcm error =', e);
-    console.log('gcm response =', b);
-  });
+  if (subscriptionId) {
+    // GCM usage
+    request.post({
+      uri: endpoint,
+      json: true,
+      headers: {
+        Authorization: `key=${apiKey}`
+      },
+      body: {
+        to: subscriptionId
+      }
+    });
+  } else {
+    request.post({
+      uri: endpoint,
+      json: true,
+      body: {
+        message: message
+      }
+    });
+  }
 };
 
 app.post('/subscribe', function (req, res) {
   console.log('received subscribe', req.body);
   // save the information necessary to send notifications to the device
-  var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
+  var userId = req.body.userId;
   var endpoint = req.body.endpoint;
+  var GCM_ENDPOINT = 'https://android.googleapis.com/gcm/send';
   var subscriptionId;
 
   if (endpoint.indexOf(GCM_ENDPOINT) === 0) {
@@ -68,110 +144,121 @@ app.post('/subscribe', function (req, res) {
     endpoint = GCM_ENDPOINT;
   }
 
-  pg.connect(conString, function(err, client, done) {
-    if (err) {
-      return send400(res, 'could not connect to database', err);
-    }
-    client.query(
-      'INSERT INTO subscriptions (endpoint, subscription_id) VALUES ($1, $2)',
-      [endpoint, subscriptionId],
-      function(err, result) {
-        // call `done()` to release the client back to the pool
-        done();
+  runQuery(
+    res,
+    'INSERT INTO subscriptions (user_id, endpoint, subscription_id) '
+    + 'VALUES ($1, $2, $3)',
+    [userId, endpoint, subscriptionId]
+  );
+});
 
-        if (err) {
-          return send400(res, 'could not insert subscription', err);
-        }
-        res.end();
-      }
-    );
+app.post('/user-data/:userId', function (req, res) {
+  console.log('received user data', req.body);
+  var userId = req.body.userId;
+  var receivedSchedules = req.body.schedules;
+  var receivedScheduleIds = receivedSchedules.map(function (sched) {
+    return sched.id;
   });
+
+  runQuery(
+    res,
+    'SELECT schedule_id, data FROM schedules WHERE user_id = $1',
+    [userId],
+    function (rows) {
+      var schedulesToAdd = receivedScheduleIds.slice();
+      var schedulesToDelete = [];
+      var schedules = [];
+
+      try {
+        schedules = result.rows.map(function (row) {
+          var idx = receivedScheduleIds.indexOf(row.id);
+          if (idx < 0) {
+            // If the result row doesn't exist in the client data
+            schedulesToDelete.push(row.id);
+          } else {
+            // If the same schedule is in both the db and the client data
+            schedulesToAdd.splice(idx, 1);
+          }
+          return row.data;
+        });
+      } catch (err) {
+        return send500(res, 'error retrieving schedules from database', err);
+      } finally {
+        res.json({
+          schedules: schedules
+        });
+      }
+
+      if (schedulesToAdd.length || schedulesToDelete.length) {
+        cleanUpSchedules(schedulesToAdd, schedulesToDelete);
+      }
+    }
+  );
 });
 
 app.post('/schedule', function (req, res) {
   console.log('received schedule', req.body);
+  var userId = req.body.userId;
   var scheduleId = req.body.id;
   var data = JSON.stringify(req.body.data);
 
-  pg.connect(conString, function(err, client, done) {
-    if (err) {
-      return send400(res, 'could not connect to database', err);
-    }
-
-    // save the schedule to the database
-    var savedSchedule = new Promise(function (resolve, reject) {
-      client.query(
-        'DELETE FROM schedules WHERE id = $1',
-        [scheduleId],
-        function (err, result) {
-          client.query(
-            'INSERT INTO schedules (id, data) VALUES ($1, $2)',
-            [scheduleId, data],
-            function(err, result) {
-              if (err) {
-                reject('could not insert schedule');
-                return send400(res, 'could not insert schedule', err);
-              }
-              res.end();
-              resolve();
-            }
-          );
-        }
-      );
-    });
-
-    // notify subscribed devices
-    client.query(
-      'SELECT endpoint, subscription_id FROM subscriptions',
-      [],
-      function (err, result) {
-        savedSchedule // wait for the schedule to be saved
-          .then(function () {
-            // call `done()` to release the client back to the pool
-            done();
-
-            result.rows.forEach(function (row) {
-              var endpoint = row.endpoint;
-              var subscriptionId = row.subscription_id;
-
-              sendNotification(
-                endpoint, subscriptionId,
-                'new data for schedule ' + scheduleId);
-            });
-          })
-          .catch(function () {
-            done();
-          });
-      });
-  });
-});
-
-app.get('/schedule/:id', function (req, res) {
-  console.log('getting schedule for', req.params.id);
-  // get the schedule as JSON
-  var scheduleId = req.params.id;
-
-  pg.connect(conString, function (err, client, done) {
-    if (err) {
-      return send400(res, 'could not connect to database', err);
-    }
-    client.query(
-      'SELECT data FROM schedules WHERE id = $1',
-      [scheduleId],
-      function (err, result) {
-        // call `done()` to release the client back to the pool
-        done();
-
-        if (err) {
-          return send400(res, 'could not get schedule', err);
-        } else if (!result.rows.length) {
-          return res.end();
-        }
-        var data = result.rows[0].data;
-        res.json(JSON.parse(data));
+  var savedSchedule = new Q.Promise(function (resolve, reject) {
+    runQuery(
+      res,
+      'DELETE FROM schedules WHERE user_id = $1 AND schedule_id = $2',
+      [userId, scheduleId],
+      function () {
+        runQuery(
+          res,
+          'INSERT INTO schedules (user_id, schedule_id, data) '
+          + 'VALUES ($1, $2, $3)',
+          [userId, scheduleId, data],
+          resolve
+        );
       }
     );
+
+    // If resolve() happens first, then this is a no-op
+    res.on('close finish', function () {
+      reject('problem saving schedule');
+    });
   });
+
+  runQuery(
+    res,
+    'SELECT user_id, endpoint, subscription_id FROM subscriptions',
+    [],
+    function (rows) {
+      savedSchedule.then(function () {
+        res.end();
+        rows.forEach(function (row) {
+          var endpoint = row.endpoint;
+          var subscriptionId = row.subscription_id;
+
+          sendNotification(
+            endpoint, subscriptionId,
+            'new data for schedule ' + scheduleId
+          );
+        });
+      });
+    }
+  );
+});
+
+app.get('/schedule/:userId/:scheduleId', function (req, res) {
+  console.log('getting schedule for', req.params.id);
+  // get the schedule as JSON
+  var userId = req.params.userId;
+  var scheduleId = req.params.scheduleId;
+
+  runQuerySingleResult(
+    res,
+    'SELECT data FROM schedules WHERE user_id = $1 AND  schedule_id = $2',
+    [userId, scheduleId],
+    function (row) {
+      res.send(row.data);
+    }
+  );
 });
 
 https.createServer(credentials, app).listen(8081);
