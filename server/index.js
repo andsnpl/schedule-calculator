@@ -218,8 +218,8 @@ app.post('/schedule', function (req, res) {
       }
     );
 
-    // If resolve() happens first, then this is a no-op
     res.on('close finish', function () {
+      // If resolve() happens first, then this is a no-op
       reject('problem saving schedule');
     });
   });

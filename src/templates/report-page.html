@@ -12,7 +12,9 @@
   <table class="report">
     <tbody>
       <tr ng-repeat="shift in schedules.shifts(selection.employee)">
-        <td class="reported-shift-date">{{ shift.schedule.date | date }}</td>
+        <td class="reported-shift-date">
+          {{ schedules.get(shift.scheduleId).date | date }}
+        </td>
         <td class="reported-shift">
           {{ shift.startTime | time }} to {{ shift.endTime | time }}
         </td>

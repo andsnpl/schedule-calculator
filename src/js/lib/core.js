@@ -24,10 +24,11 @@ let _restoreCollection = function (coll, Cls) {
 };
 
 export class Shift {
-  constructor (employeeId, startTime, endTime) {
+  constructor (employeeId, startTime, endTime, scheduleId) {
     this.employeeId = employeeId;
     this.startTime = startTime;
     this.endTime = endTime;
+    this.scheduleId = scheduleId;
     this.id = createId();
     if (!this._validate()) {
       throw new Error('Invalid parameters for Shift.');
@@ -50,13 +51,14 @@ export class Shift {
       id: this.id,
       employeeId: this.employeeId,
       startTime: this.startTime.toUTCString(),
-      endTime: this.endTime.toUTCString()
+      endTime: this.endTime.toUTCString(),
+      scheduleId: this.scheduleId
     };
   }
   static _restore(contents) {
     let start = new Date(contents.startTime);
     let end = new Date(contents.endTime);
-    let shift = new Shift(contents.employeeId, start, end);
+    let shift = new Shift(contents.employeeId, start, end, contents.scheduleId);
     shift.id = createId._restoreId(contents.id);
     return shift;
   }
@@ -121,8 +123,7 @@ export class Schedule {
     let startTime = this.openTime;
     let length = 8;
     let endTime = addHours(startTime, length);
-    let shiftObj = new Shift(employeeId, startTime, endTime);
-    shiftObj.schedule = this;
+    let shiftObj = new Shift(employeeId, startTime, endTime, this.id);
     this.shifts[shiftObj.id] = shiftObj;
     return shiftObj;
   }
@@ -165,7 +166,6 @@ export class Employee {
     }
   }
   _validate() {
-    console.log(this.userId);
            // must have integer id
     return typeof this.id === 'number' && this.id % 1 === 0
            // must have string name
