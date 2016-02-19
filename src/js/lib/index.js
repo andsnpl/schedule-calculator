@@ -85,7 +85,7 @@ app.factory('userSessionData', [
         for (let sched of localData.schedules) {
           sched = Schedule._restore(JSON.parse(sched));
           sched._isSaved = true;
-          this.schedules[key] = sched;
+          this.schedules[sched.id] = sched;
         }
 
         this.employeeList.onChange(() => userSessionData.saveEmployeeList());

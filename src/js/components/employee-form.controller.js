@@ -44,10 +44,10 @@ app.controller('EmployeeFormCtrl', [
     $scope.editTarget = employeeEditTarget;
     $scope.editTarget.currentEmployee = {
       id: emp.id,
-      name: emp.name,
-      userId: '',
-      role: emp.role,
-      payRate: emp.payRate
+      name: emp.name || '',
+      userId: emp.userId || '',
+      role: emp.role || '',
+      payRate: emp.payRate || 15.00
     };
 
     $scope.closeEmployee = closeForm;
@@ -62,17 +62,14 @@ app.controller('EmployeeFormCtrl', [
       // If not, it's new data we need to add, but we still clear at the end.
       let current = $scope.editTarget.currentEmployee;
       let emp = employeeList.employees[current.id];
-      console.log(emp);
       if ('id' in current && emp) {
         emp.setName(current.name);
         emp.setUserId(current.userId);
         emp.setRole(current.role);
         emp.setPayRate(current.payRate);
       } else {
-        console.log(
         employeeList.addEmployee(
-          current.name, current.userId, current.role, current.payRate)
-        );
+          current.name, current.userId, current.role, current.payRate);
       }
       closeForm();
     };

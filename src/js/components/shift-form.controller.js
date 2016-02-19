@@ -43,9 +43,13 @@ app.controller('ShiftFormCtrl', [
     let startingHours = schedules.total(shift.employeeId) - startingLength;
     $scope.$watchGroup(
       ['editTarget.currentShift.startTime', 'editTarget.currentShift.endTime'],
-      function () {
+      function (_, oldValues) {
         let current = $scope.editTarget.currentShift;
         if (!current) { return; }
+        if (current.startTime >= current.endTime) {
+          [current.startTime, current.endTime] = oldValues;
+          return;
+        }
         let lengthMs = current.endTime - current.startTime;
         let length = lengthMs / 1000 / 60 / 60;
         $scope.length = length;
