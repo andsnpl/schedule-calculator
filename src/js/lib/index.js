@@ -42,13 +42,15 @@ app.factory('userSessionData', [
         if (!(id in this.schedules)) { return; } // Should this throw?
         this.schedules[id]._isSaved = true;
         let sched = JSON.stringify(this.schedules[id]._save());
+        let elist = JSON.stringify(this.employeeList._save());
         localStorage.setItem(`schedules/${id}`, sched);
 
         // Post to the server
         let data = JSON.stringify({
           userId: this.userId,
           scheduleId: id,
-          data: sched
+          data: sched,
+          employeeList: elist
         });
         return $http.post(`${APISERVER}/schedule`, data);
       },
@@ -56,7 +58,7 @@ app.factory('userSessionData', [
         localStorage.clear();
         this.schedules = {};
         localStorage.setItem('userId', this.userId);
-        localStorage.setItem('employeeList', this.elist);
+        localStorage.setItem('employeeList', this.employeeList);
       },
       saveSchedules() {
         Object.keys(this.schedules).map(id => this.saveSchedule(id));

@@ -253,7 +253,7 @@ app.get('/schedule/:userId/:scheduleId', function (req, res) {
 
   runQuerySingleResult(
     res,
-    'SELECT data FROM schedules WHERE user_id = $1 AND  schedule_id = $2',
+    'SELECT data FROM schedules WHERE user_id = $1 AND schedule_id = $2',
     [userId, scheduleId],
     function (row) {
       res.send(row.data);
