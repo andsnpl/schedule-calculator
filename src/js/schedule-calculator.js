@@ -6,7 +6,7 @@ let app = angular.module('scheduleCalculator', [
   'ngRoute', 'ngAnimate'
 ]);
 
-app.constant('APISERVER', 'https://localhost:8081');
+app.constant('APISERVER', 'https://shrouded-harbor-34046.herokuapp.com');
 
 app.config([
   '$httpProvider',
