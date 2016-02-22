@@ -39,11 +39,13 @@ app.factory('userSessionData', [
         delete this.schedules[id];
       },
       saveSchedule(id) {
-        if (!(id in this.schedules)) { return; } // Should this throw?
+        if (!(id in this.schedules)) {
+          throw new Error('Trying to save an id not in schedules');
+        }
         this.schedules[id]._isSaved = true;
-        let sched = JSON.stringify(this.schedules[id]._save());
-        let elist = JSON.stringify(this.employeeList._save());
-        localStorage.setItem(`schedules/${id}`, sched);
+        let sched = this.schedules[id]._save();
+        let elist = this.employeeList._save();
+        localStorage.setItem(`schedules/${id}`, JSON.stringify(sched));
 
         // Post to the server
         let data = JSON.stringify({
