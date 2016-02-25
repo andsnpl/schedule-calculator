@@ -6,10 +6,7 @@
     "clean": "rm -rf build/",
     "_build": "NODE_ENV=production webpack -p --optimize-dedupe --progress",
     "build": "npm run clean && npm run _build",
-    "start": "NODE_ENV=development webpack-dev-server --inline",
-    "serve": "node server/index.js",
-    "serve-dev": "node --debug server/index.js",
-    "tdd": "NODE_ENV=testing npm start & webpack --watch & karma start",
+    "start": "NODE_ENV=development webpack-dev-server --https",
     "archive": "npm prune --production"
   },
   "author": "Paul Anderson",
