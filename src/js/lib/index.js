@@ -6,94 +6,6 @@ let app = angular.module('scheduleCalculator');
 
 let data;
 
-let saveEmployeeList = function () {
-  let elist = JSON.stringify(data.employeeList._save());
-  localStorage.setItem('employeeList', elist);
-};
-
-let clearSchedule = function (id) {
-  localStorage.removeItem(`schedules/${id}`);
-  delete data.schedules[id];
-};
-
-let saveSchedule = function (id) {
-  if (!(id in data.schedules)) { return; } // Should this throw?
-  data.schedules[id]._isSaved = true;
-  let sched = JSON.stringify(data.schedules[id]._save());
-  localStorage.setItem(`schedules/${id}`, sched);
-};
-
-let clearSchedules = function () {
-  let elist = localStorage.getItem('employeeList');
-  localStorage.clear();
-  data.schedules = {};
-  localStorage.setItem('employeeList', elist);
-};
-
-let saveSchedules = function () {
-  Object.keys(data.schedules).map(saveSchedule);
-};
-
-let loadData = function () {
-  let data = {
-    employeeList: null,
-    schedules: {}
-  };
-
-  // load employee list
-  let elist = localStorage.getItem('employeeList');
-  if (elist !== null) {
-    data.employeeList = elist = EmployeeList._restore(JSON.parse(elist));
-  } else {
-    data.employeeList = elist = new EmployeeList();
-    // TODO: delete this dummy data
-    let dummyEmployees = [
-      elist.addEmployee('Vandell', 'test', 10000),
-      elist.addEmployee('Wanda', 'test', 10),
-      elist.addEmployee('Xavier', 'test', 10),
-      elist.addEmployee('Yara', 'test', 10),
-      elist.addEmployee('Alex', 'test', 10),
-      elist.addEmployee('Brit', 'test', 10),
-      elist.addEmployee('Chris', 'test', 10),
-      elist.addEmployee('Drew', 'test', 10),
-      elist.addEmployee('Evan', 'test', 10),
-      elist.addEmployee('Frida', 'test', 10),
-      elist.addEmployee('Glen', 'test', 10)
-    ];
-
-    let dummySchedules = [];
-    let addDummySchedule = sched =>
-      dummySchedules.push(data.schedules[sched.id] = sched);
-    addDummySchedule(new Schedule(new Date()));
-    addDummySchedule(new Schedule(new Date(1970, 11, 12)));
-
-    let dummyShifts = [
-      dummySchedules[0].addShift(dummyEmployees[0].id),
-      dummySchedules[0].addShift(dummyEmployees[1].id),
-      dummySchedules[1].addShift(dummyEmployees[2].id),
-      dummySchedules[1].addShift(dummyEmployees[3].id),
-      dummySchedules[1].addShift(dummyEmployees[4].id)
-    ];
-  }
-
-  data.employeeList.onChange(saveEmployeeList);
-
-  // load schedules
-  let len = localStorage.length;
-  for (let i = 0; i < len; i++) {
-    let key = localStorage.key(i);
-    if (key.indexOf('schedules/') !== 0) { continue; }
-    let sched = localStorage.getItem(key);
-    sched = Schedule._restore(JSON.parse(sched));
-    sched._isSaved = true;
-    data.schedules[sched.id] = sched;
-  }
-
-  return data;
-};
-
-data = loadData();
-
 app.filter('time', [
   '$locale',
   function ($locale) {
@@ -104,44 +16,140 @@ app.filter('time', [
   }
 ]);
 
+app.factory('userSessionData', [
+  '$http', '$q', 'APISERVER',
+  function ($http, $q, APISERVER) {
+    let userSessionData = {
+      userId: null,
+      employeeList: null,
+      schedules: {},
+      saveUserId(userId) {
+        this.userId = userId;
+        localStorage.setItem('userId', this.userId);
+      },
+      clearUserId() {
+        localStorage.clearItem('userId');
+      },
+      saveEmployeeList() {
+        let elist = JSON.stringify(this.employeeList._save());
+        localStorage.setItem('employeeList', elist);
+      },
+      clearSchedule(id) {
+        localStorage.removeItem(`schedules/${id}`);
+        delete this.schedules[id];
+      },
+      saveSchedule(id) {
+        if (!(id in this.schedules)) {
+          throw new Error('Trying to save an id not in schedules');
+        }
+        this.schedules[id]._isSaved = true;
+        let sched = this.schedules[id]._save();
+        let elist = this.employeeList._save();
+        localStorage.setItem(`schedules/${id}`, JSON.stringify(sched));
+
+        // Post to the server
+        let data = JSON.stringify({
+          userId: this.userId,
+          scheduleId: id,
+          data: sched,
+          employeeList: elist
+        });
+        return $http.post(`${APISERVER}/schedule`, data);
+      },
+      clear() {
+        localStorage.clear();
+        this.schedules = {};
+        localStorage.setItem('userId', this.userId);
+        localStorage.setItem('employeeList', this.employeeList);
+      },
+      saveSchedules() {
+        Object.keys(this.schedules).map(id => this.saveSchedule(id));
+      },
+      sync() {
+        // load in data from storage
+        let localData = {
+          userId: localStorage.getItem('userId'),
+          employeeList: localStorage.getItem('employeeList'),
+          schedules: []
+        };
+        let len = localStorage.length;
+        for (let i = 0; i < len; i++) {
+          let key = localStorage.key(i);
+          if (key.indexOf('schedules/') !== 0) { continue; }
+          let sched = localStorage.getItem(key);
+          localData.schedules.push(sched);
+        }
+
+        // refresh own state to match
+        this.userId = localData.userId;
+        this.employeeList = localData.employeeList
+          ? EmployeeList._restore(JSON.parse(localData.employeeList))
+          : new EmployeeList();
+        this.schedules = {};
+        for (let sched of localData.schedules) {
+          sched = Schedule._restore(JSON.parse(sched));
+          sched._isSaved = true;
+          this.schedules[sched.id] = sched;
+        }
+
+        this.employeeList.onChange(() => userSessionData.saveEmployeeList());
+
+        return $http.post(`${APISERVER}/user-data/${this.userId}`, localData)
+          .then(function (data) {
+            if (!data.schedules) { return; }
+            let schedules = userSessionData.schedules = {};
+            for (sched of data.schedules) {
+              schedules[sched.id] = Schedule._restore(sched);
+            }
+          });
+      },
+      logout() {
+        localStorage.clear();
+      }
+    };
+
+    userSessionData.sync();
+
+    return userSessionData;
+  }
+]);
+
 app.factory('employeeList', [
-  function () {
-    return data.employeeList;
+  'userSessionData',
+  function (userSessionData) {
+    return userSessionData.employeeList;
   }
 ]);
 
 app.factory('schedules', [
-  '$http', 'APISERVER',
-  function ($http, APISERVER) {
-    let schedules = data.schedules;
+  'userSessionData',
+  function (userSessionData) {
+    let schedules = userSessionData.schedules;
     let schedule;
     return {
-      current: function () { return schedule; },
-      add: function (date) {
+      current() { return schedule; },
+      add(date) {
         schedule = new Schedule(date);
         schedules[schedule.id] = schedule;
         return schedule;
       },
-      clear: clearSchedule,
-      save: function (id) {
-        saveSchedule(id);
-        let data = JSON.stringify({
-          id,
-          data: this.get(id)._save()
-        });
-        return $http.post(`${APISERVER}/schedule`, data);
+      clear(id) {
+        userSessionData.clearSchedule(id)
       },
-      get: function (id) {
+      save(id) {
+        userSessionData.saveSchedule(id);
+      },
+      get(id) {
         let sched = schedules[id];
         schedule = sched;
         return sched;
       },
-      list: function () {
+      list() {
         return Object.keys(schedules)
           .map(key => schedules[key])
           .sort(function (a, b) { return a.date - b.date; });
       },
-      shifts: function (employeeId) {
+      shifts(employeeId) {
         let list = this.list();
         let shifts = list.reduce(function (shifts, sched) {
           return shifts.concat(sched.listShifts());
@@ -150,14 +158,14 @@ app.factory('schedules', [
         return matches;
       },
       // total number of hours worked by the employee
-      total: function (employeeId) {
+      total(employeeId) {
         let shifts = this.shifts(employeeId);
         let totalMs = shifts.reduce(function (total, shift) {
           return total + (shift.endTime - shift.startTime);
         }, 0);
         return totalMs / 1000 / 60 / 60;
       },
-      nextDate: function () {
+      nextDate() {
         let schedules = this.list();
         let latest = schedules[schedules.length - 1];
         let d;

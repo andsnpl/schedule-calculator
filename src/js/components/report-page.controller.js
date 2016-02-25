@@ -9,7 +9,7 @@ app.controller('ReportPageCtrl', [
     $scope.employees = employeeList.listEmployees();
 
     $scope.selection = {
-      employee: $scope.employees[0].id
+      employee: $scope.employees.length ? $scope.employees[0].id : null
     };
   }
 ]);

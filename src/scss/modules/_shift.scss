@@ -1,0 +1,30 @@
+.shift {
+  position: relative;
+  display: block;
+  margin: 2.25rem 0;
+}
+
+.shift-entity {
+  display: block;
+  height: 3.5rem;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  background-color: $denim;
+  color: white;
+
+  .delete-button {
+    position: absolute;
+    right: 0;
+    top: 0;
+    transform: translate3d(50%, -50%, 0);
+  }
+
+  &.is-active {
+    box-shadow: 0 0 0 0.05rem white,
+                0 0 0 0.15rem $redorange;
+  }
+}
+
+.shift-checkbox {
+  @include hidden-checkbox;
+}

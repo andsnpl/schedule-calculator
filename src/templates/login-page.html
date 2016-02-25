@@ -1,0 +1,29 @@
+<div class="login-container">
+  <form class="login-form" ng-submit="saveUserId()">
+    <h1 class="headline">Schedule-MATIC</h1>
+    <div class="about flyover">
+      <input type="checkbox" class="flyover-toggle" id="about-flyover-toggle">
+      <label class="flyover-label" for="about-flyover-toggle">
+        About the service
+      </label>
+      <p class="flyover-content" ng-mousedown="$event.preventDefault()">
+      Coordinate schedules with your team day by day, minute by minute! With
+      this webapp, you can create schedules for team members you manage, print
+      and distribute them. Team members can choose to receive push notifications
+      on their desktop when a schedule they are part of has changed.</p>
+    </div>
+    <label for="userid-input" class="material-label">
+      Input your desired userId.
+      <input id="userid-input" class="material-input material-highlighted-input"
+             type="text" ng-model="form.userId">
+    </label>
+    <label for="receive-push-checkbox" class="material-label">
+      Would you like to receive push notifications when your schedules are
+      updated?
+      <input class="material-checkbox" type="checkbox"
+             ng-model="form.receivePush" id="receive-push-checkbox">
+    </label>
+
+    <input class="button confirm-button" type="submit" value="Get Started">
+  </form>
+</div>

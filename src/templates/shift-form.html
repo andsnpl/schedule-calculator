@@ -1,7 +1,7 @@
 <div ng-if="editTarget.currentShift" class="editshift">
   <form name="editShift">
     <label for="editing_startTime" class="material-label">
-      <input type="time" name="startTime" id="editing_startTime"
+      <input autofocus type="time" name="startTime" id="editing_startTime"
              ng-model="editTarget.currentShift.startTime"
              class="material-input">
       start time
@@ -19,7 +19,7 @@
     <input type="button" value="&times;" alt="Cancel"
            class="button round-button giant-button close-button"
            ng-click="closeShift()">
-    <input type="button" value="&check;" alt="Save"
+    <input type="submit" value="&check;" alt="Save"
            class="button round-button giant-button save-button"
            ng-click="editShift.$valid && submitShift()">
   </form>

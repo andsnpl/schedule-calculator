@@ -1,0 +1,25 @@
+.login-container {
+  position: relative;
+  text-align: center;
+  height: 100%;
+  width: 100%;
+  background-color: $lightdenim;
+
+  &::before {
+    content: '';
+    height: 1px;
+    display: block;
+    clear: both;
+  }
+}
+
+.login-form {
+  display: inline-block;
+  text-align: initial;
+  position: absolute;
+  top: 50%;
+  transform: translate3d(-50%, -50%, 0);
+  padding: 1.5rem;
+  background-color: white;
+  @include shadow;
+}

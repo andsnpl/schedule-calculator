@@ -1,0 +1,107 @@
+@mixin shadow {
+  box-shadow: 0 0.2em 0.4em -0.1em rgba(0, 0, 0, 0.5);
+}
+
+.button {
+  text-align: center;
+  border-radius: 0;
+  border: none;
+  background-color: white;
+  margin: 0 0.4rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-size: inherit;
+  @include shadow;
+}
+
+.round-button {
+  border: none;
+  border-radius: 50%;
+  font-size: 1.2rem;
+  font-weight: 400;
+  width: 1.25em;
+  height: 1.25em;
+  padding: 0 0 0.15em 0;
+}
+
+.large-button {
+  font-size: 1.5rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.giant-button {
+  font-size: 1.8rem;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.delete-button {
+  background-color: $redorange;
+  color: white;
+  text-align: center;
+}
+
+.close-button {
+  background-color: $lightgray;
+  color: $denim;
+}
+
+.save-button {
+  padding-bottom: 0;
+}
+
+.add-button {
+  background-color: $denim;
+  color: white;
+}
+
+.save-button,
+.confirm-button {
+  background-color: $denim;
+  color: white;
+  font-weight: 300;
+}
+
+.material-label {
+  display: block;
+  position: relative;
+  margin: 0.25rem 0.25rem 1rem 0.25rem;
+  line-height: 1.75rem;
+  color: $teal;
+}
+
+.material-label.overlay-label {
+  line-height: $importanttextsize * 1.5;
+  text-align: right;
+}
+
+.material-input {
+  border: none;
+  border-top: 1px solid $lightdenim;
+  font-size: $importanttextsize;
+  font-weight: inherit;
+  font-family: inherit;
+  width: 100%;
+  background-color: transparent;
+  color: $denim;
+}
+
+.material-label.overlay-label > .material-input {
+  position: absolute;
+  left: 0;
+}
+
+.material-select {
+  width: 100%;
+  border: none;
+  border-top: 1px solid $lightdenim;
+  padding: 0.1rem 1rem;
+  background-color: transparent;
+  font-family: inherit;
+  font-weight: inherit;
+  color: $denim;
+  border-radius: 0;
+  font-size: $importanttextsize;
+}

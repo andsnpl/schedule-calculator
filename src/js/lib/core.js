@@ -24,10 +24,11 @@ let _restoreCollection = function (coll, Cls) {
 };
 
 export class Shift {
-  constructor (employeeId, startTime, endTime) {
+  constructor (employeeId, startTime, endTime, scheduleId) {
     this.employeeId = employeeId;
     this.startTime = startTime;
     this.endTime = endTime;
+    this.scheduleId = scheduleId;
     this.id = createId();
     if (!this._validate()) {
       throw new Error('Invalid parameters for Shift.');
@@ -50,13 +51,14 @@ export class Shift {
       id: this.id,
       employeeId: this.employeeId,
       startTime: this.startTime.toUTCString(),
-      endTime: this.endTime.toUTCString()
+      endTime: this.endTime.toUTCString(),
+      scheduleId: this.scheduleId
     };
   }
   static _restore(contents) {
     let start = new Date(contents.startTime);
     let end = new Date(contents.endTime);
-    let shift = new Shift(contents.employeeId, start, end);
+    let shift = new Shift(contents.employeeId, start, end, contents.scheduleId);
     shift.id = createId._restoreId(contents.id);
     return shift;
   }
@@ -121,8 +123,7 @@ export class Schedule {
     let startTime = this.openTime;
     let length = 8;
     let endTime = addHours(startTime, length);
-    let shiftObj = new Shift(employeeId, startTime, endTime);
-    shiftObj.schedule = this;
+    let shiftObj = new Shift(employeeId, startTime, endTime, this.id);
     this.shifts[shiftObj.id] = shiftObj;
     return shiftObj;
   }
@@ -153,8 +154,9 @@ export class Schedule {
 }
 
 export class Employee {
-  constructor (name, role, payRate) {
+  constructor (name, userId, role, payRate) {
     this.name = name;
+    this.userId = userId;
     this.role = role;
     this.payRate = payRate;
     this.id = createId();
@@ -168,26 +170,35 @@ export class Employee {
     return typeof this.id === 'number' && this.id % 1 === 0
            // must have string name
         && typeof this.name === 'string'
+           // must have string user id
+        && typeof this.userId === 'string'
            // must have string role
         && typeof this.role === 'string'
            // must have numeric payRate > 0
-        && typeof this.payRate === 'number' && this.payRate > 0;
+        // && typeof this.payRate === 'number' && this.payRate > 0;
   }
   _save() {
     return {
       id: this.id,
       name: this.name,
+      userId: this.userId,
       role: this.role,
       payRate: this.payRate
     };
   }
   static _restore(contents) {
-    let emp = new Employee(contents.name, contents.role, contents.payRate);
+    let emp = new Employee(
+      contents.name, contents.userId, contents.role, contents.payRate);
     emp.id = createId._restoreId(contents.id);
     return emp;
   }
   setName(name) {
     _setPossiblyInvalidProp(this, 'name', name);
+    this.change();
+    return this;
+  }
+  setUserId(userId) {
+    _setPossiblyInvalidProp(this, 'userId', userId);
     this.change();
     return this;
   }

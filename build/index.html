@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <title>Schedule Calculator</title>
-  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,300,300italic' rel='stylesheet' type='text/css'>
+  <link href='https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,300italic'
+        rel='stylesheet' type='text/css'>
   <link rel="manifest" href="/manifest.json">
 </head>
 <body ng-app="scheduleCalculator">
   <nav class="tabbar" ng-controller="navCtrl">
-    <ul class="tabs">
+    <ul class="tabs" ng-if="!(route.indexOf('/login') + 1)">
       <li class="tab" ng-class="{
         'is-active': route.indexOf('/schedule') === 0
       }">
@@ -27,16 +28,5 @@
     </ul>
   </nav>
   <ng-view></ng-view>
-  <div ng-controller="pushCtrl">
-    <div class="message-overlay" ng-if="prompt">
-      <p>
-        Would you like to receive push notifications when schedules are changed?
-      </p>
-      <input type="button" ng-click="deny()" value="Deny"
-             class="button cancel-button">
-      <input type="button" ng-click="allow()" value="Allow"
-             class="button confirm-button">
-    </div>
-  </div>
 <script src="js/index.min.js"></script></body>
 </html>

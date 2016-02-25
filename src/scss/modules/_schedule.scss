@@ -1,0 +1,150 @@
+.schedule {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 0.3rem;
+  white-space: nowrap;
+  overflow: scroll;
+}
+
+.schedulecontent {
+  display: inline-block;
+  min-width: 100%;
+  height: 100%;
+  overflow-y: scroll;
+}
+
+.shifts {
+  list-style: none;
+  padding: 1.85rem 0 0 0;
+  margin: 0 0 10rem 0;
+}
+
+.schedule-exit-button,
+.schedule-save-button {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 100;
+}
+
+.schedule-save-button {
+  top: 4rem;
+}
+
+.editshift {
+  @include fullscreen-form;
+}
+
+.gridmarks {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 0.3rem;
+  left: 0.3rem;
+  right: 0.3rem;
+  bottom: 0.3rem;
+  z-index: -1;
+  display: flex;
+}
+
+.gridmarks-col {
+  display: inline-block;
+  flex-grow: 1;
+  box-sizing: border-box;
+  border-left: 1px solid $lightdenim;
+  padding: 0 1% 0 0.25%;
+  min-width: $hourminwidth;
+}
+
+.gridmarks-header {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: 0.3rem;
+  right: 0.3rem;
+  height: 2.5rem;
+  background: linear-gradient(
+    to bottom,
+    rgba(255, 255, 255, 1.0) 20%,
+    rgba(255, 255, 255, 0.9) 40%,
+    rgba(255, 255, 255, 0.9) 80%,
+    rgba(255, 255, 255, 0.0) 100%);
+  z-index: 1;
+}
+
+.gridmarks-label {
+  display: inline-block;
+  flex-grow: 1;
+  min-width: $hourminwidth;
+  box-sizing: border-box;
+  font-size: $importanttextsize;
+  padding: 0.5rem 0 0 0.4rem;
+  white-space: nowrap;
+  color: $teal;
+
+  /* initial time display */
+
+  .shortlabel {
+    display: block;
+  }
+
+  .medlabel,
+  .longlabel {
+    display: none;
+  }
+
+  /* alternate display for time based on both width and number of columns */
+
+  @mixin med {
+    width: $meddatewidth;
+
+    .medlabel {
+      display: block;
+    }
+
+    .shortlabel,
+    .longlabel {
+      display: none;
+    }
+  }
+
+  @mixin long {
+    width: $longdatewidth;
+
+    .longlabel {
+      display: block;
+    }
+
+    .shortlabel,
+    .medlabel {
+      display: none;
+    }
+  }
+
+  @for $numhours from 1 through 24 {
+    .hourscount-#{$numhours} & {
+      @media only screen and (min-width: $numhours * $meddatewidth) {
+        @include med;
+      }
+
+      @media only screen and (min-width: $numhours * $longdatewidth) {
+        @include long;
+      }
+    }
+  }
+}
+
+// Force the schedule content to assume the correct width
+@for $numhours from 1 through 24 {
+  .hourscount-#{$numhours} .schedulecontent::after {
+    content: '';
+    display: block;
+    min-width: $hourminwidth * $numhours;
+  }
+}

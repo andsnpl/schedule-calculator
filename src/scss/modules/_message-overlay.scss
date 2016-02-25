@@ -1,0 +1,16 @@
+.message-overlay {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  min-height: 6rem;
+  background-color: white;
+  z-index: 1000;
+  padding: 2rem;
+  text-align: center;
+  @include shadow
+
+  input[type=button] {
+    margin-left: 2rem;
+    margin-right: 2rem;
+  }
+}
