@@ -141,6 +141,9 @@ app.factory('schedules', [
       },
       get(id) {
         let sched = schedules[id];
+        if (!sched) {
+          throw new Error(`No schedule found with id ${id}`);
+        }
         schedule = sched;
         return sched;
       },
@@ -166,8 +169,8 @@ app.factory('schedules', [
         return totalMs / 1000 / 60 / 60;
       },
       nextDate() {
-        let schedules = this.list();
-        let latest = schedules[schedules.length - 1];
+        let schedulesList = this.list();
+        let latest = schedulesList[schedulesList.length - 1];
         let d;
         if (latest) {
           d = new Date(latest.date);

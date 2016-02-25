@@ -26,7 +26,7 @@ app.directive('schedule', [
           let first = scope.schedule.openTime.getHours();
           let last = scope.schedule.closeTime.getHours() + 1;
           let hours = [];
-          for (var i = first; i < last; i++) {
+          for (let i = first; i < last; i++) {
             let d = new Date();
             d.setMilliseconds(0);
             d.setSeconds(0);
