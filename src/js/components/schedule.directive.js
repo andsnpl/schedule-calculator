@@ -22,24 +22,28 @@ app.directive('schedule', [
             .map(shift => employeeList.employees[shift.employeeId]);
         });
 
+        let setTimeBounds = function () {
+          let first = scope.schedule.openTime.getHours();
+          let last = scope.schedule.closeTime.getHours() + 1;
+          let hours = [];
+          for (var i = first; i < last; i++) {
+            let d = new Date();
+            d.setMilliseconds(0);
+            d.setSeconds(0);
+            d.setMinutes(0);
+            d.setHours(i);
+            hours.push(d);
+          }
+          scope.hours = hours;
+          scope.pctOfDayPerHour = 1 / (last - first) * 100;
+        };
+
         scope.$watchGroup(
           ['schedule.openTime', 'schedule.closeTime'],
-          function (newValues) {
-            let first = newValues[0].getHours();
-            let last = newValues[1].getHours() + 1;
-            let hours = [];
-            for (var i = first; i < last; i++) {
-              let d = new Date();
-              d.setMilliseconds(0);
-              d.setSeconds(0);
-              d.setMinutes(0);
-              d.setHours(i);
-              hours.push(d);
-            }
-            scope.hours = hours;
-            scope.pctOfDayPerHour = 1 / (last - first) * 100;
-          }
+          setTimeBounds
         );
+        // invoke when directive loads
+        setTimeBounds();
 
         scope.selectShift = function(id) {
           let shift = scope.schedule.shifts[id];
