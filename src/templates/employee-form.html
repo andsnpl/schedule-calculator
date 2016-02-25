@@ -1,4 +1,5 @@
-<form class="addemployee" name="addEmployee" ng-if="editTarget.currentEmployee">
+<form class="addemployee" name="addEmployee" ng-if="editTarget.currentEmployee"
+      novalidate>
   <label class="material-label overlay-label">
     <input required autofocus class="material-input" type="text"
            name="name" ng-model="editTarget.currentEmployee.name">
@@ -16,7 +17,7 @@
   </label>
   <label class="material-label overlay-label">
     <input required class="material-input" type="number"
-           name="payRate" step=0.25 min=0.01
+           name="payRate" step=0.25 min=0.25
            ng-model="editTarget.currentEmployee.payRate">
     pay rate
   </label>
