@@ -1,0 +1,11 @@
+- start from employees or give hints to add employee first
+- general hints to guide the first-time user
+- info about what login ID is for ... because it's not clear
+- - (call it username)
+- outstanding issues:
+- CORS fails periodically for no known reason
+- - `heroku restart` works
+- localstorage (on FF ... and others?) does not work on the first pageload.
+- some users cannot view all hour markings
+- - no elements generated for hours before 11pm-12am span
+- - tried fixing schedule directive to calculate hours when linked in. No change
