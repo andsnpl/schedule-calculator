@@ -10,7 +10,7 @@ app.factory('pushNotifications', [
 
     if (supported) {
       ready = navigator.serviceWorker
-        .register('/service-worker.js')
+        .register('/schedule-calculator/build/service-worker.js')
         .then(function () {
           if (!('showNotification' in ServiceWorkerRegistration.prototype)) {
             console.warn('notifications not supported.');
