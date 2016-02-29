@@ -102,8 +102,9 @@ app.factory('userSessionData', [
         }
 
         return $http.post(`${APISERVER}/user-data/${this.userId}`, localData)
-          .then(function (data) {
-            console.log('data returned from api', data);
+          .then(function (response) {
+            console.log('data returned from api', response);
+            let data = respose.data;
             if (!data.schedules) { return; }
             let schedules = userSessionData.schedules = {};
             for (sched of data.schedules) {
