@@ -80,22 +80,30 @@ app.factory('userSessionData', [
           localData.schedules.push(sched);
         }
 
-        // refresh own state to match
-        this.userId = localData.userId;
-        this.employeeList = localData.employeeList
-          ? EmployeeList._restore(JSON.parse(localData.employeeList))
-          : new EmployeeList();
-        this.schedules = {};
-        for (let sched of localData.schedules) {
-          sched = Schedule._restore(JSON.parse(sched));
-          sched._isSaved = true;
-          this.schedules[sched.id] = sched;
+        try {
+          // refresh own state to match
+          this.userId = localData.userId;
+          this.employeeList = localData.employeeList
+            ? EmployeeList._restore(JSON.parse(localData.employeeList))
+            : new EmployeeList();
+          this.schedules = {};
+          for (let sched of localData.schedules) {
+            sched = Schedule._restore(JSON.parse(sched));
+            sched._isSaved = true;
+            this.schedules[sched.id] = sched;
+          }
+        } catch (err) {
+          console.error(err);
+        } finally {
+          if (!(this.employeeList instanceof EmployeeList)) {
+            this.employeeList = new EmployeeList();
+          }
+          this.employeeList.onChange(() => userSessionData.saveEmployeeList());
         }
-
-        this.employeeList.onChange(() => userSessionData.saveEmployeeList());
 
         return $http.post(`${APISERVER}/user-data/${this.userId}`, localData)
           .then(function (data) {
+            console.log('data returned from api', data);
             if (!data.schedules) { return; }
             let schedules = userSessionData.schedules = {};
             for (sched of data.schedules) {
