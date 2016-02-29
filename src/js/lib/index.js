@@ -82,6 +82,7 @@ app.factory('userSessionData', [
 
         try {
           // refresh own state to match
+          console.log(localData);
           this.userId = localData.userId;
           this.employeeList = localData.employeeList
             ? EmployeeList._restore(JSON.parse(localData.employeeList))
