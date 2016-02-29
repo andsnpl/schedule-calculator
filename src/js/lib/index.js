@@ -19,6 +19,8 @@ app.filter('time', [
 app.factory('userSessionData', [
   '$http', '$q', 'APISERVER',
   function ($http, $q, APISERVER) {
+    console.log('creating userSessionData');
+
     let userSessionData = {
       userId: null,
       employeeList: null,
@@ -67,6 +69,7 @@ app.factory('userSessionData', [
       },
       sync() {
         // load in data from storage
+        console.log('beginning sync');
         let localData = {
           userId: localStorage.getItem('userId'),
           employeeList: localStorage.getItem('employeeList'),
