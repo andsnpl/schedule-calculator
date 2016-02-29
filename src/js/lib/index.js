@@ -137,6 +137,7 @@ app.factory('employeeList', [
 app.factory('schedules', [
   'userSessionData',
   function (userSessionData) {
+    console.log('creating schedules');
     let schedules = userSessionData.schedules;
     let schedule;
     return {

@@ -5,6 +5,7 @@ let app = angular.module('scheduleCalculator');
 app.controller('ScheduleListPageCtrl', [
   '$scope', '$location', 'schedules',
   function ($scope, $location, schedules) {
+    console.log('schedule page control');
     $scope.schedules = schedules;
 
     $scope.editTarget = {
