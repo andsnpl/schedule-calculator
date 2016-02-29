@@ -14,6 +14,8 @@ app.controller('ScheduleListPageCtrl', [
 
     $scope.createSchedule = function () {
       let sched = $scope.schedules.add($scope.schedules.nextDate());
+      console.log('created sched', sched);
+      console.log('can get back out?', schedules.get(sched.id));
       $scope.editTarget.currentSchedule = sched;
     };
 
